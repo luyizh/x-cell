@@ -11,6 +11,33 @@ describe('table-view', () => {
   	document.documentElement.innerHTML = html;
   });
 
+  describe('table body', () => {
+  	it('has the right size', () => {
+  		// set up initial state
+  		const numCols = 6;
+  		const numRows = 10;
+  		const model = new TableModel(numCols, numRows);
+  		const view = new TableView(model);
+  		view.init();
+  		// inspect initial state
+  		let ths = document.querySelectorAll('THEAD TH');
+  		expect(ths.length).toBe(numCols);
+  	});
+
+  	it('fills in values from the model', () => {
+  		// set up initial state
+  		const numCols = 3;
+  		const numRows = 3;
+  		const model = new TableModel(numCols, numRows);
+  		const view = new TableView(model);
+  		model.setValue({ col: 2, row: 1 }, '123');
+  		view.init();
+  		// inspect initial state
+  		const trs = document.querySelectorAll('TBODY TR');
+  		expect(trs[1].cells[2].textContent).toBe('123');
+  	});
+  });
+
   describe('table header', () => {
   	it('has valid column header labels', () => {
   		// set up the initial state
