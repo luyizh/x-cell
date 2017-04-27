@@ -128,6 +128,7 @@ class TableView {
 		  .forEach(th => this.headerRowEl.appendChild(th));
 	}
 
+
 	isCurrentCell(col, row) {
 		return this.currentCellLocation.col === col &&
 		       this.currentCellLocation.row === row;

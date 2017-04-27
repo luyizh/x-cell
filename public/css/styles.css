@@ -16,4 +16,8 @@ td {
 
 #formula-bar {
 	background-color: lightgreen;
+	border: 1px solid black;
+	width: 150px;
+	height: 25px;
+	padding: 3px;
 }
