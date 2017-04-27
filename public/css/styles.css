@@ -11,5 +11,9 @@ td {
 }
 
 .current-cell {
-	background-color: pink;
+	background-color: lightblue;
+}
+
+#formula-bar {
+	background-color: lightgreen;
 }

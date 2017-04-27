@@ -11,6 +11,24 @@ describe('table-view', () => {
   	document.documentElement.innerHTML = html;
   });
 
+  describe('formula bar', () => {
+  	it('updates FROM the value of the current cell', () => {
+  		// set up initial state
+  		const model = new TableModel(3, 3);
+  		const view = new TableView(model);
+  		model.setValue({ col: 2, row: 1 }, '123');
+  		view.init();
+  		// inspect initial state
+  		const formulaBarEl = document.querySelector('#formula-bar');
+  		expect(formulaBarEl.value).toBe('');
+  		// simulate user action
+  		const trs = document.querySelectorAll('TBODY TR');
+  		trs[1].cells[2].click();
+  		// inspect resulting state
+  		expect(formulaBarEl.value).toBe('123');
+  	});
+  });
+
   describe('table body', () => {
   	it('highlights the current cell when clicked', () => {
   		// set up initial state
