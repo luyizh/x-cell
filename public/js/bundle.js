@@ -126,21 +126,34 @@ class TableView {
 	}
 	
 	renderTableHeader() {
-		// clear header row
-		removeChildren(this.headerRowEl);
+		const fragment = document.createDocumentFragment();
+		
 		// get letters and build elements
 		getLetterRange('A', this.model.numCols)
 		  .map(colLabel => createTH(colLabel))
-		  .forEach(th => this.headerRowEl.appendChild(th));
+		  .forEach(th => fragment.appendChild(th));
+		
+		// clear header row
+		removeChildren(this.headerRowEl);
+		// add fragment to header
+		this.headerRowEl.appendChild(fragment);
 	}
 
 	renderTableFooter() {
-		removeChildren(this.footerRowEl);
+		const fragment = document.createDocumentFragment();
+
+		// create footer cells with appropriate sums
 		for (let col = 0; col < this.model.numCols; col++) {
 			const sum = this.model.getSumOfColumn(col);
 			const td = createTD(sum);
-			this.footerRowEl.appendChild(td);
+			fragment.appendChild(td);
 		}
+		
+		// clear footer row
+		removeChildren(this.footerRowEl);
+		// add fragment to footer
+		this.footerRowEl.appendChild(fragment);
+
 	}
 
 
@@ -151,6 +164,7 @@ class TableView {
 
 	renderTableBody() {
 		const fragment = document.createDocumentFragment();
+		
 		for (let row = 0; row < this.model.numRows; row++) {
 			// create each row
 			const tr = createTR();
