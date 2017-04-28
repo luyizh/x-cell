@@ -45,6 +45,7 @@ class TableView {
 		this.renderTableBody();
 		this.renderTableFooter();
 	}
+
 	
 	renderTableHeader() {
 		const fragment = document.createDocumentFragment();
@@ -74,7 +75,6 @@ class TableView {
 		removeChildren(this.footerRowEl);
 		// add fragment to footer
 		this.footerRowEl.appendChild(fragment);
-
 	}
 
 
@@ -122,6 +122,7 @@ class TableView {
 		const value = this.formulaBarEl.value;
 		this.model.setValue(this.currentCellLocation, value);
 		this.renderTableBody();
+		this.renderTableFooter();
 	}
 
 	handleSheetClick(evt) {
@@ -130,6 +131,7 @@ class TableView {
 
 		this.currentCellLocation = { col: col, row: row };
 		this.renderTableBody();
+		this.renderTableFooter();
 		this.renderFormulaBar();
 	}
 }

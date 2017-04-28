@@ -69,10 +69,28 @@ class TableModel {
 		this.data[this._getCellId(location)] = value;
 	}
 
-	getSumOfColumn(col) {
-		return 10;
+	getSumOfColumn(col) {		
+		const values = [];
+		
+		// iterate the given column
+		for (let r = 0; r < this.numRows; r++) {
+			const value = this.getValue({ col : col, row: r });
+			// collect all values as integers
+			values.push(parseInt(value, 10));
+		}		
+		
+		// filter out NaN values
+		const validIntegers = values.filter(function(x) {
+			return Number.isInteger(x);
+		});
+		
+		// reduce to a sum
+		const sum = validIntegers.reduce(function(a, b) {
+			return a + b;
+		}, 0);
+    
+		return sum;
 	}
-
 }
 
 module.exports = TableModel;
@@ -124,6 +142,7 @@ class TableView {
 		this.renderTableBody();
 		this.renderTableFooter();
 	}
+
 	
 	renderTableHeader() {
 		const fragment = document.createDocumentFragment();
@@ -153,7 +172,6 @@ class TableView {
 		removeChildren(this.footerRowEl);
 		// add fragment to footer
 		this.footerRowEl.appendChild(fragment);
-
 	}
 
 
@@ -201,6 +219,7 @@ class TableView {
 		const value = this.formulaBarEl.value;
 		this.model.setValue(this.currentCellLocation, value);
 		this.renderTableBody();
+		this.renderTableFooter();
 	}
 
 	handleSheetClick(evt) {
@@ -209,6 +228,7 @@ class TableView {
 
 		this.currentCellLocation = { col: col, row: row };
 		this.renderTableBody();
+		this.renderTableFooter();
 		this.renderFormulaBar();
 	}
 }
