@@ -32,7 +32,7 @@ const removeChildren = function(parentEl) {
 const createEl = function(tagName) {
 	return function(text) {
 		const el = document.createElement(tagName);
-		if (text) {
+		if (String(text)) {
 			el.textContent = text;
 		}
 		return el;
@@ -59,6 +59,7 @@ class TableModel {
 	}
 
 	_getCellId(location) {
+		// e.g., column 4, row 3 has a key of "4:3"
 		return `${location.col}:${location.row}`;
 	}
 
@@ -69,6 +70,29 @@ class TableModel {
 	setValue(location, value) {
 		this.data[this._getCellId(location)] = value;
 	}
+
+	getSumOfColumn(col) {
+	  return 10;
+	}
+
+	  /*getSumOfColumn(col) {
+		const values = [];
+		// iterate the given column
+		for (let row = 0; row < this.numRows; row++) {
+			const value = this.data[`${col}:${row}`];		
+		  // collect all values
+		  values.push(parseInt(value, 10));
+		}
+		// filter to only numeric values
+		values.filter(function(x) {
+			return Number.isInteger(x);
+		});
+		// reduce to a sum
+		const sum = values.reduce( function(a, b) {
+			return a + b;
+		});
+		return sum;
+	}*/
 
 }
 
@@ -123,9 +147,7 @@ class TableView {
 	renderTable() {
 		this.renderTableHeader();
 		this.renderTableBody();
-		//
 		this.renderTableFooter();
-		//
 	}
 	
 	renderTableHeader() {
@@ -137,26 +159,14 @@ class TableView {
 		  .forEach(th => this.headerRowEl.appendChild(th));
 	}
 
-	//
 	renderTableFooter() {
-		// clear footer row
 		removeChildren(this.footerRowEl);
-
-    const fragment = document.createDocumentFragment();
-		const tf = createTR();
 		for (let col = 0; col < this.model.numCols; col++) {
-			const position = { col: col, row: this.model.numRows + 1 };
-			const value = this.model.getValue(position);
-			const td = createTD(value);
-			tf.appendChild(td);
+			const sum = this.model.getSumOfColumn(col);
+			const td = createTD(sum);
+			this.footerRowEl.appendChild(td);
 		}
-		
-		fragment.appendChild(tf);
-		this.footerRowEl.appendChild(tf);
-		
 	}
-	//
-
 
 	isCurrentCell(col, row) {
 		return this.currentCellLocation.col === col &&

@@ -16,4 +16,14 @@ describe('table-model', () => {
 		// inspect the resulting state
 		expect(model.getValue(location)).toBe('foo');
 	});
+
+	it('can compute the sum of a column', () => {
+		// set up the initial state
+		const model = new TableModel();
+		model.setValue({col: 0, row: 0}, 5);
+		model.setValue({col: 0, row: 1}, 10);
+		model.setValue({col: 0, row: 2}, 20);
+
+		expect(model.getSumOfColumn(0)).toBe(35);
+	});
 });

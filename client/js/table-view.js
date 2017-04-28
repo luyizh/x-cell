@@ -47,9 +47,7 @@ class TableView {
 	renderTable() {
 		this.renderTableHeader();
 		this.renderTableBody();
-		//
 		this.renderTableFooter();
-		//
 	}
 	
 	renderTableHeader() {
@@ -61,26 +59,14 @@ class TableView {
 		  .forEach(th => this.headerRowEl.appendChild(th));
 	}
 
-	//
 	renderTableFooter() {
-		// clear footer row
 		removeChildren(this.footerRowEl);
-
-    const fragment = document.createDocumentFragment();
-		const tf = createTR();
 		for (let col = 0; col < this.model.numCols; col++) {
-			const position = { col: col, row: this.model.numRows + 1 };
-			const value = this.model.getValue(position);
-			const td = createTD(value);
-			tf.appendChild(td);
+			const sum = this.model.getSumOfColumn(col);
+			const td = createTD(sum);
+			this.footerRowEl.appendChild(td);
 		}
-		
-		fragment.appendChild(tf);
-		this.footerRowEl.appendChild(tf);
-		
 	}
-	//
-
 
 	isCurrentCell(col, row) {
 		return this.currentCellLocation.col === col &&
