@@ -3,9 +3,7 @@ const { removeChildren,
 	      createTR,
 	      createTH,
 	      createTD,
-	      //
-	      createTF 
-	      //
+
 	      } = require('./dom-util');
 
 class TableView {
@@ -69,7 +67,7 @@ class TableView {
 		removeChildren(this.footerRowEl);
 
     const fragment = document.createDocumentFragment();
-		const tf = createTF();
+		const tf = createTR();
 		for (let col = 0; col < this.model.numCols; col++) {
 			const position = { col: col, row: this.model.numRows + 1 };
 			const value = this.model.getValue(position);

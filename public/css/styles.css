@@ -23,9 +23,3 @@ td {
 	font-size: 16;
 }
 
-tfoot {
-	border: 1px solid black;
-	min-width: 100px;
-	height: 25px;
-	padding: 3px;
-}
