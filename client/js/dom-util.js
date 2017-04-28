@@ -7,7 +7,7 @@ const removeChildren = function(parentEl) {
 const createEl = function(tagName) {
 	return function(text) {
 		const el = document.createElement(tagName);
-		if (String(text)) {
+		if (text) {
 			el.textContent = text;
 		}
 		return el;
