@@ -17,10 +17,17 @@ const createEl = function(tagName) {
 const createTR = createEl('TR');
 const createTH = createEl('TH');
 const createTD = createEl('TD');
+//
+const createTF = createEl('TF');
+//
 
 module.exports = {
 	createTR: createTR,
 	createTH: createTH,
 	createTD: createTD,
-	removeChildren: removeChildren
+	removeChildren: removeChildren,
+	//
+	createTF: createTF
+	//
+
 };

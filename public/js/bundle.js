@@ -42,12 +42,19 @@ const createEl = function(tagName) {
 const createTR = createEl('TR');
 const createTH = createEl('TH');
 const createTD = createEl('TD');
+//
+const createTF = createEl('TF');
+//
 
 module.exports = {
 	createTR: createTR,
 	createTH: createTH,
 	createTD: createTD,
-	removeChildren: removeChildren
+	removeChildren: removeChildren,
+	//
+	createTF: createTF
+	//
+
 };
 },{}],4:[function(require,module,exports){
 class TableModel {
@@ -77,7 +84,11 @@ const { getLetterRange } = require('./array-util');
 const { removeChildren, 
 	      createTR,
 	      createTH,
-	      createTD } = require('./dom-util');
+	      createTD,
+	      //
+	      createTF 
+	      //
+	      } = require('./dom-util');
 
 class TableView {
 	constructor(model) {
@@ -95,6 +106,9 @@ class TableView {
 		this.headerRowEl = document.querySelector('THEAD TR');
 		this.sheetBodyEl = document.querySelector('TBODY');
 		this.formulaBarEl = document.querySelector('#formula-bar');
+		//
+		this.footerRowEl = document.querySelector('TFOOT TR');
+		//
 	}
 
 	initCurrentCell() {
@@ -117,6 +131,9 @@ class TableView {
 	renderTable() {
 		this.renderTableHeader();
 		this.renderTableBody();
+		//
+		this.renderTableFooter();
+		//
 	}
 	
 	renderTableHeader() {
@@ -127,6 +144,26 @@ class TableView {
 		  .map(colLabel => createTH(colLabel))
 		  .forEach(th => this.headerRowEl.appendChild(th));
 	}
+
+	//
+	renderTableFooter() {
+		// clear footer row
+		removeChildren(this.footerRowEl);
+
+    const fragment = document.createDocumentFragment();
+		const tf = createTF();
+		for (let col = 0; col < this.model.numCols; col++) {
+			const position = { col: col, row: this.model.numRows + 1 };
+			const value = this.model.getValue(position);
+			const td = createTD(value);
+			tf.appendChild(td);
+		}
+		
+		fragment.appendChild(tf);
+		this.footerRowEl.appendChild(tf);
+		
+	}
+	//
 
 
 	isCurrentCell(col, row) {
@@ -155,6 +192,7 @@ class TableView {
 			// add each row to fragment
 			fragment.appendChild(tr);
 		}
+
 		// clear sheet body of previous children
 		removeChildren(this.sheetBodyEl);
 		// add fragment to sheet body
