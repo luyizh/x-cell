@@ -17,6 +17,10 @@ class TableModel {
 		this.data[this._getCellId(location)] = value;
 	}
 
+	getSumOfColumn(col) {
+		return 10;
+	}
+
 }
 
 module.exports = TableModel;

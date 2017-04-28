@@ -20,6 +20,7 @@ class TableView {
 		this.headerRowEl = document.querySelector('THEAD TR');
 		this.sheetBodyEl = document.querySelector('TBODY');
 		this.formulaBarEl = document.querySelector('#formula-bar');
+		this.footerRowEl = document.querySelector('TFOOT TR');
 	}
 
 	initCurrentCell() {
@@ -42,6 +43,7 @@ class TableView {
 	renderTable() {
 		this.renderTableHeader();
 		this.renderTableBody();
+		this.renderTableFooter();
 	}
 	
 	renderTableHeader() {
@@ -51,6 +53,15 @@ class TableView {
 		getLetterRange('A', this.model.numCols)
 		  .map(colLabel => createTH(colLabel))
 		  .forEach(th => this.headerRowEl.appendChild(th));
+	}
+
+	renderTableFooter() {
+		removeChildren(this.footerRowEl);
+		for (let col = 0; col < this.model.numCols; col++) {
+			const sum = this.model.getSumOfColumn(col);
+			const td = createTD(sum);
+			this.footerRowEl.appendChild(td);
+		}
 	}
 
 
