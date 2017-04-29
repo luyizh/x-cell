@@ -24,6 +24,8 @@ class TableView {
 
 		this.addColumnEl = document.getElementById('add-column');
 		this.addRowEl = document.getElementById('add-row');
+
+		this.rowLabelsEl = document.getElementById('row-labels');
 	}
 
 	initCurrentCell() {
@@ -46,15 +48,18 @@ class TableView {
 		this.renderTableHeader();
 		this.renderTableBody();
 		this.renderTableFooter();
+
+		this.renderRowLabels();
 	}
 	
+	renderRowLabels() {
+		// just add one empty cell for now, for testing
+		const th = createTH();
+		this.rowLabelsEl.appendChild(th);
+	}
+
 	renderTableHeader() {		
 		const fragment = document.createDocumentFragment();
-
-		// add blank row number
-		const rowLabel = createTH(0);
-		rowLabel.className = "row-label";
-		fragment.appendChild(rowLabel);
 		
 		// get letters and build elements
 		getLetterRange('A', this.model.numCols)
@@ -69,11 +74,6 @@ class TableView {
 
 	renderTableFooter() {
 		const fragment = document.createDocumentFragment();
-
-		// create row label
-		const rowLabel = createTH('Sum');
-		rowLabel.className = "row-label";
-		fragment.appendChild(rowLabel);
 
 		// create footer cells with appropriate sums
 		for (let col = 0; col < this.model.numCols; col++) {
@@ -94,11 +94,6 @@ class TableView {
 		for (let row = 0; row < this.model.numRows; row++) {
 			// create each row
 			const tr = createTR();
-
-			// create each row label
-			const rowLabel = createTH(row + 1);
-			rowLabel.className = "row-label";
-			tr.appendChild(rowLabel);
 
 			// create each standard cell
 			for (let col = 0; col < this.model.numCols; col++) {
@@ -146,6 +141,8 @@ class TableView {
 		this.renderTableHeader();
 		this.renderTableBody();
 		this.renderTableFooter();
+
+		//this.renderRowLabels();
 	}
 
 	handleAddColumnClick(event) {
@@ -155,6 +152,8 @@ class TableView {
 		this.renderTableHeader();
 		this.renderTableBody();
 		this.renderTableFooter();
+
+		//this.renderRowLabels();
 	}
 
 	handleFormulaBarChange(evt) {
@@ -162,16 +161,20 @@ class TableView {
 		this.model.setValue(this.currentCellLocation, value);
 		this.renderTableBody();
 		this.renderTableFooter();
+
+		//this.renderRowLabels();
 	}
 
 	handleSheetClick(evt) {
-		const col = evt.target.cellIndex - 1;
+		const col = evt.target.cellIndex;
 		const row = evt.target.parentElement.rowIndex - 1;
 
 		this.currentCellLocation = { col: col, row: row };
 		this.renderTableBody();
 		this.renderTableFooter();
 		this.renderFormulaBar();
+
+		//this.renderRowLabels();
 	}
 }
 
