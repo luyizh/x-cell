@@ -118,6 +118,9 @@ class TableView {
 		this.sheetBodyEl = document.querySelector('TBODY');
 		this.formulaBarEl = document.querySelector('#formula-bar');
 		this.footerRowEl = document.querySelector('TFOOT TR');
+
+		this.addColumnEl = document.getElementById('add-column');
+		this.addRowEl = document.getElementById('add-row');
 	}
 
 	initCurrentCell() {
@@ -213,6 +216,29 @@ class TableView {
 			handleSheetClick.bind(this));
 		this.formulaBarEl.addEventListener('keyup', this.
 			handleFormulaBarChange.bind(this));
+		
+		this.addRowEl.addEventListener('click', this.
+			handleAddRowClick.bind(this));
+		this.addColumnEl.addEventListener('click', this.
+			handleAddColumnClick.bind(this));
+	}
+
+	handleAddRowClick(event) {
+		// increment row number
+		this.model.numRows++;
+		// redraw table
+		this.renderTableHeader();
+		this.renderTableBody();
+		this.renderTableFooter();
+	}
+
+	handleAddColumnClick(event) {
+		// increment column number
+		this.model.numCols++;
+		// redraw table
+		this.renderTableHeader();
+		this.renderTableBody();
+		this.renderTableFooter();
 	}
 
 	handleFormulaBarChange(evt) {
