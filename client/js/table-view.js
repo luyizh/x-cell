@@ -53,9 +53,30 @@ class TableView {
 	}
 	
 	renderRowLabels() {
-		// just add one empty cell for now, for testing
-		const th = createTH();
-		this.rowLabelsEl.appendChild(th);
+		const fragment = document.createDocumentFragment();
+
+		// add blank row number
+		const blankRowLabel = createTH();
+		fragment.appendChild(blankRowLabel);
+
+		for (let row = 0; row < this.model.numRows; row++) {
+			// create each row
+			const tr = createTR();
+			// create each row label
+			const rowLabel = createTH(row + 1);
+			tr.appendChild(rowLabel);
+
+			// add each row to fragment
+			fragment.appendChild(tr);
+		}
+
+		// create sum row label
+		const sumRowLabel = createTH('Sum');
+		fragment.appendChild(sumRowLabel);
+
+		// clear footer row
+		removeChildren(this.rowLabelsEl);
+		this.rowLabelsEl.appendChild(fragment);
 	}
 
 	renderTableHeader() {		
@@ -138,11 +159,11 @@ class TableView {
 		// increment row number
 		this.model.numRows++;
 		// redraw table
-		this.renderTableHeader();
+		//this.renderTableHeader();
 		this.renderTableBody();
 		this.renderTableFooter();
 
-		//this.renderRowLabels();
+		this.renderRowLabels();
 	}
 
 	handleAddColumnClick(event) {

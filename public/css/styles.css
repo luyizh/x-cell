@@ -5,7 +5,7 @@ table {
 th,
 td {
 	border: 1px solid black;
-	min-width: 100px;
+	width: 100px;
 	height: 25px;
 	padding: 3px;
 }
@@ -42,10 +42,12 @@ button {
 	border-collapse: collapse;
 	float: left;
 	color: rgb(47, 79, 79);
+	width: 8%;
 }
 
 #sheet-current {
 	float: right;
+	width: 92%;
 }
 
 .clearfloat {
