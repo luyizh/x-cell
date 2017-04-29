@@ -37,3 +37,11 @@ button {
 	color: rgb(47, 79, 79);
 	background-color: #CCF3D4;
 }
+
+.row-label {	
+	color: rgb(47, 79, 79);
+	border: 1px solid black;
+	min-width: 50px;
+	height: 25px;
+	padding: 3px;
+}

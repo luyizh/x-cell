@@ -42,16 +42,19 @@ class TableView {
 	  this.formulaBarEl.focus();
 	}
 
-
 	renderTable() {
 		this.renderTableHeader();
 		this.renderTableBody();
 		this.renderTableFooter();
 	}
-
 	
-	renderTableHeader() {
+	renderTableHeader() {		
 		const fragment = document.createDocumentFragment();
+
+		// add blank row number
+		const rowLabel = createTH(0);
+		rowLabel.className = "row-label";
+		fragment.appendChild(rowLabel);
 		
 		// get letters and build elements
 		getLetterRange('A', this.model.numCols)
@@ -67,6 +70,11 @@ class TableView {
 	renderTableFooter() {
 		const fragment = document.createDocumentFragment();
 
+		// create row label
+		const rowLabel = createTH('Sum');
+		rowLabel.className = "row-label";
+		fragment.appendChild(rowLabel);
+
 		// create footer cells with appropriate sums
 		for (let col = 0; col < this.model.numCols; col++) {
 			const sum = this.model.getSumOfColumn(col);
@@ -80,22 +88,22 @@ class TableView {
 		this.footerRowEl.appendChild(fragment);
 	}
 
-
-	isCurrentCell(col, row) {
-		return this.currentCellLocation.col === col &&
-		       this.currentCellLocation.row === row;
-	}
-
 	renderTableBody() {
 		const fragment = document.createDocumentFragment();
 		
 		for (let row = 0; row < this.model.numRows; row++) {
 			// create each row
 			const tr = createTR();
+
+			// create each row label
+			const rowLabel = createTH(row + 1);
+			rowLabel.className = "row-label";
+			tr.appendChild(rowLabel);
+
+			// create each standard cell
 			for (let col = 0; col < this.model.numCols; col++) {
-				const position = { col: col, row: row };
+				const position = { col: col, row: row};
 				const value = this.model.getValue(position);
-				// create each standard cell
 				const td = createTD(value);
 				
 				if (this.isCurrentCell(col, row)) {
@@ -112,6 +120,11 @@ class TableView {
 		removeChildren(this.sheetBodyEl);
 		// add fragment to sheet body
 		this.sheetBodyEl.appendChild(fragment);
+	}
+
+	isCurrentCell(col, row) {
+		return this.currentCellLocation.col === col &&
+		       this.currentCellLocation.row === row;
 	}
 
 	attachEventHandlers() {
@@ -152,7 +165,7 @@ class TableView {
 	}
 
 	handleSheetClick(evt) {
-		const col = evt.target.cellIndex;
+		const col = evt.target.cellIndex - 1;
 		const row = evt.target.parentElement.rowIndex - 1;
 
 		this.currentCellLocation = { col: col, row: row };
