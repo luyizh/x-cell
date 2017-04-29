@@ -110,4 +110,49 @@ describe('table-view', () => {
   	});
   });
 
+  describe('add row', () => {
+    it('adds row when clicked', () => {
+      // set up initial state
+      const numCols = 10;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+      // inspect initial state
+      let trs = document.querySelectorAll('TBODY TR');
+      expect(trs.length).toBe(5);
+      // simulate user action
+      let addRow = document.getElementById('add-row');
+      addRow.click();
+      // inspect resulting state
+      trs = document.querySelectorAll('TBODY TR');
+      expect(trs.length).toBe(6);
+    });
+  });
+
+  describe('add column', () => {
+    it('adds column when clicked', () => {
+      // set up initial state
+      const numCols = 10;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+      // inspect initial state
+      let trs = document.querySelectorAll('TBODY TR');
+      expect(trs[0].cells.length).toBe(10);
+
+      let ths = document.querySelectorAll('THEAD TH');
+      expect(ths.length).toBe(numCols);
+      // simulate user action
+      let addColumn = document.getElementById('add-column');
+      addColumn.click();
+      // inspect resulting state
+      trs = document.querySelectorAll('TBODY TR');
+      expect(trs[0].cells.length).toBe(11);
+
+      ths = document.querySelectorAll('THEAD TH');
+      expect(ths.length).toBe(numCols + 1);
+    });
+  });
 });
