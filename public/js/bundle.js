@@ -96,6 +96,19 @@ class TableModel {
 		this.rowHighlighted = row;
 	}
 
+	highlightCol(col) {
+		// clear color inventory
+		this.colors = {};
+		
+		// set this.colors accordingly to reflect that
+		// all cells in that col have been highlighted 
+		for (let row = 0; row < this.numRows; row++) {
+			this.setColor({ col: col - 1, row: row }, "yellow");
+		}
+		
+		this.colHighlighted = col;
+	}
+
 	getSumOfColumn(col) {		
 		const values = [];
 		
@@ -213,9 +226,15 @@ class TableView {
 		const fragment = document.createDocumentFragment();
 		
 		// get letters and build elements
-		getLetterRange('A', this.model.numCols)
-		  .map(colLabel => createTH(colLabel))
-		  .forEach(th => fragment.appendChild(th));
+		//getLetterRange('A', this.model.numCols)
+		  //.map(colLabel => createTH(colLabel))
+		  //.forEach(th => fragment.appendChild(th));
+		const letters = getLetterRange('A', this.model.numCols);
+		for (let col = 0; col < this.model.numCols; col++) {
+			const colLabel = createTH(letters[col]);
+			colLabel.id = "col" + (col + 1).toString();
+			fragment.appendChild(colLabel);
+		}
 		
 		// clear header row
 		removeChildren(this.headerRowEl);
@@ -298,11 +317,17 @@ class TableView {
 
 		this.rowLabelsEl.addEventListener('click', this.
 			handleRowLabelClick.bind(this));
+
+		this.headerRowEl.addEventListener('click', this.
+			handleColHeaderClick.bind(this));
 	}
 
 	handleRowLabelClick(event) {
 		// clear current cell highlighting
 		this.model.currentCellHighlighted = false;
+
+		// clear current col highlighting
+		this.model.colHighlighted = "none";
 
 		// get id of row that was clicked
 		const rowNumber = event.target.id.slice(3);
@@ -313,22 +338,93 @@ class TableView {
 
 	}
 
+	handleColHeaderClick(event) {
+    // clear current cell highlighting
+		this.model.currentCellHighlighted = false;
+
+		// clear current row highlighting
+		this.model.rowHighlighted = "none";
+
+		// get index of column that was clicked
+		const colNumber = event.target.id.slice(3);
+		console.log(colNumber);
+
+		// redraw table with that column highlighted
+		this.model.highlightCol(colNumber);
+		this.renderTableBody();
+	}
+
 
 	handleAddRowClick(event) {
 		// increment row number
 		this.model.numRows++;
-		// redraw table
-		this.renderTableBody();
-		this.renderTableFooter();
-		this.renderRowLabels();
+		
+		// if a row is highlighted at time of press,
+		// must be sure not to highlight a column...
+		if (this.model.rowHighlighted !== "none") {
+
+			this.model.colors = {};
+			this.model.colHighlighted = "none";
+			this.model.highlightRow(this.model.rowHighlighted);
+
+		  this.renderTableHeader();
+		  this.renderTableBody();
+		  this.renderTableFooter();
+		  this.renderRowLabels();
+		}
+
+		// if a current cell is highlighted, redraw the table directly
+		if (this.model.currentCellHighlighted) {
+			this.model.colHighlighted = "none";
+			this.model.rowHighlighted = "none";
+			this.model.colors = {};
+		  this.renderTableHeader();
+		  this.renderTableBody();
+		  this.renderTableFooter();
+		  this.renderRowLabels();
+		
+		// if a column is highlighted at time of press,
+		// must highlight newly added cells in expanded row before redrawing
+		// and must be sure not to highlight a row...
+		} 
+		if (this.model.colHighlighted !== "none") {
+      // clear highlighting
+		  this.model.colors = {};
+		  this.model.rowHighlighted = "none";
+		  // re-highlight
+		  this.model.highlightCol(this.model.colHighlighted);
+
+		  this.renderTableHeader();
+		  this.renderTableBody();
+		  this.renderTableFooter();
+		  this.renderRowLabels();		
+
+		} 
 	}
 
 	handleAddColumnClick(event) {
 		// increment column number
 		this.model.numCols++;
 
+		// if a col is highlighted at time of press,
+		// must be sure not to highlight a row...
+		if (this.model.colHighlighted !== "none") {
+
+			this.model.colors = {};
+			this.model.rowHighlighted = "none";
+			this.model.highlightCol(this.model.colHighlighted);
+
+		  this.renderTableHeader();
+		  this.renderTableBody();
+		  this.renderTableFooter();
+		  this.renderRowLabels();
+		}
+
 		// if a current cell is highlighted, redraw the table directly
 		if (this.model.currentCellHighlighted) {
+			this.model.colHighlighted = "none";
+			this.model.rowHighlighted = "none";
+			this.model.colors = {};
 		  this.renderTableHeader();
 		  this.renderTableBody();
 		  this.renderTableFooter();

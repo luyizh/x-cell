@@ -44,6 +44,19 @@ class TableModel {
 		this.rowHighlighted = row;
 	}
 
+	highlightCol(col) {
+		// clear color inventory
+		this.colors = {};
+		
+		// set this.colors accordingly to reflect that
+		// all cells in that col have been highlighted 
+		for (let row = 0; row < this.numRows; row++) {
+			this.setColor({ col: col - 1, row: row }, "yellow");
+		}
+		
+		this.colHighlighted = col;
+	}
+
 	getSumOfColumn(col) {		
 		const values = [];
 		
