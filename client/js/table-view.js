@@ -222,47 +222,38 @@ class TableView {
 		// increment row number
 		this.model.numRows++;
 		
-		// if a row is highlighted at time of press,
-		// must be sure not to highlight a column...
+		// if a row is highlighted at time of press
 		if (this.model.rowHighlighted !== "none") {
-
+			// clear colors and make sure column is not highlighted
 			this.model.colors = {};
 			this.model.colHighlighted = "none";
+			// re-highlight appropriate row
 			this.model.highlightRow(this.model.rowHighlighted);
-
-		  this.renderTableHeader();
-		  this.renderTableBody();
-		  this.renderTableFooter();
-		  this.renderRowLabels();
 		}
 
 		// if a current cell is highlighted, redraw the table directly
 		if (this.model.currentCellHighlighted) {
+			// first clear colors and make sure column/row are not highlighted
 			this.model.colHighlighted = "none";
 			this.model.rowHighlighted = "none";
 			this.model.colors = {};
-		  this.renderTableHeader();
-		  this.renderTableBody();
-		  this.renderTableFooter();
-		  this.renderRowLabels();
+		}
 		
 		// if a column is highlighted at time of press,
 		// must highlight newly added cells in expanded row before redrawing
-		// and must be sure not to highlight a row...
-		} 
 		if (this.model.colHighlighted !== "none") {
-      // clear highlighting
+      // clear colors and make sure row is not highlighted
 		  this.model.colors = {};
 		  this.model.rowHighlighted = "none";
-		  // re-highlight
+		  // re-highlight appropriate column
 		  this.model.highlightCol(this.model.colHighlighted);
-
-		  this.renderTableHeader();
-		  this.renderTableBody();
-		  this.renderTableFooter();
-		  this.renderRowLabels();		
-
 		} 
+		
+		// redraw spreadsheet
+		this.renderTableHeader();
+		this.renderTableBody();
+		this.renderTableFooter();
+		this.renderRowLabels();
 	}
 
 	handleAddColumnClick(event) {
@@ -270,41 +261,35 @@ class TableView {
 		this.model.numCols++;
 
 		// if a col is highlighted at time of press,
-		// must be sure not to highlight a row...
 		if (this.model.colHighlighted !== "none") {
-
+			// clear colors and make sure row is not highlighted
 			this.model.colors = {};
 			this.model.rowHighlighted = "none";
-			this.model.highlightCol(this.model.colHighlighted);
-
-		  this.renderTableHeader();
-		  this.renderTableBody();
-		  this.renderTableFooter();
-		  this.renderRowLabels();
+			// re-highlight appropriate column
+			this.model.highlightCol(this.model.colHighlighted);	  
 		}
 
 		// if a current cell is highlighted, redraw the table directly
 		if (this.model.currentCellHighlighted) {
+			// clear colors and make sure row/column are not highlighted
 			this.model.colHighlighted = "none";
 			this.model.rowHighlighted = "none";
 			this.model.colors = {};
-		  this.renderTableHeader();
-		  this.renderTableBody();
-		  this.renderTableFooter();
+		}
 		
 		// if a row is highlighted at time of press,
 		// must highlight newly added cells in expanded row before redrawing
-		} else if (this.model.rowHighlighted !== "none") {
+		if (this.model.rowHighlighted !== "none") {
       // clear highlighting
 		  this.model.colors = {};
 		  // re-highlight
 		  this.model.highlightRow(this.model.rowHighlighted);
-
-		  this.renderTableHeader();
-		  this.renderTableBody();
-		  this.renderTableFooter();
 		}
-		
+
+		// re-draw rest of table
+		this.renderTableHeader();
+		this.renderTableBody();
+		this.renderTableFooter();		
 	}
 
 	handleFormulaBarChange(evt) {
