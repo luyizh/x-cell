@@ -57,6 +57,9 @@ class TableModel {
 		this.data = {};
 
 		this.colors = {};
+
+		this.rowHighlighted = "none";
+		this.colHighlighted = "none";
 	}
 
 	_getCellId(location) {
@@ -79,14 +82,17 @@ class TableModel {
 		this.colors[this._getCellId(location)] = color;
 	}
 
-	// set this.colors accordingly
-	hilightRow(row) {
+	highlightRow(row) {
 		// clear color inventory
 		this.colors = {};
-		// highlight all cells in that row
+		
+		// set this.colors accordingly to reflect that
+		// all cells in that row have been highlighted 
 		for (let col = 0; col < this.numCols; col++) {
 			this.setColor({ col: col, row: row - 1}, "yellow");
 		}
+		
+		this.rowHighlighted = row;
 	}
 
 	getSumOfColumn(col) {		
@@ -290,7 +296,7 @@ class TableView {
 		const rowNumber = event.target.id.slice(3);
 		
 		// redraw table with that row highlighted
-		this.model.hilightRow(rowNumber);
+		this.model.highlightRow(rowNumber);
 		this.renderTableBody();
 
 	}
@@ -308,6 +314,16 @@ class TableView {
 	handleAddColumnClick(event) {
 		// increment column number
 		this.model.numCols++;
+
+		// if any row highlighted at time of press,
+		// must highlight newly added cells in expanded row
+		if (this.model.rowHighlighted !== "none") {
+		  // clear highlighting
+		  this.model.colors = {};
+		  // re-highlight
+		  this.model.highlightRow(this.model.rowHighlighted);
+		}
+
 		// redraw table
 		this.renderTableHeader();
 		this.renderTableBody();

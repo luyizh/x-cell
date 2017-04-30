@@ -173,7 +173,7 @@ class TableView {
 		const rowNumber = event.target.id.slice(3);
 		
 		// redraw table with that row highlighted
-		this.model.hilightRow(rowNumber);
+		this.model.highlightRow(rowNumber);
 		this.renderTableBody();
 
 	}
@@ -191,6 +191,16 @@ class TableView {
 	handleAddColumnClick(event) {
 		// increment column number
 		this.model.numCols++;
+
+		// if any row highlighted at time of press,
+		// must highlight newly added cells in expanded row
+		if (this.model.rowHighlighted !== "none") {
+		  // clear highlighting
+		  this.model.colors = {};
+		  // re-highlight
+		  this.model.highlightRow(this.model.rowHighlighted);
+		}
+
 		// redraw table
 		this.renderTableHeader();
 		this.renderTableBody();
