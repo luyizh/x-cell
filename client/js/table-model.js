@@ -93,8 +93,28 @@ class TableModel {
 	}
 
 	computeSum(colNumber, rowStart, rowEnd) {
-		return 123;
+		const values = [];
+		
+		// iterate the given column
+		for (let r = rowStart - 1; r < rowEnd; r++) {
+			const value = this.getValue({ col : colNumber - 1, row: r });
+			// collect all values as integers
+			values.push(parseInt(value, 10));
+		}		
+		
+		// filter out NaN values
+		const validIntegers = values.filter(function(x) {
+			return Number.isInteger(x);
+		});
+		
+		// reduce to a sum
+		const sum = validIntegers.reduce(function(a, b) {
+			return a + b;
+		}, 0);
+    
+		return sum;
 	}
+	
 
 	getSumOfColumn(col) {		
 		const values = [];
