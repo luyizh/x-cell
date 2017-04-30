@@ -239,7 +239,6 @@ class TableView {
 			this.model.highlightRow(this.model.rowHighlighted);
 
 			// shift data
-			console.log("Shift data needed row", this.model.rowHighlighted); 
 			this.model.shiftDataRow(this.model.rowHighlighted);
 		}
 		
@@ -281,7 +280,7 @@ class TableView {
 			this.model.highlightCol(this.model.colHighlighted);	
 
 			// shift data
-			console.log("Shift data needed col", this.model.colHighlighted);  
+			this.model.shiftDataCol(this.model.colHighlighted); 
 		}
 		
 		// if a row is highlighted at time of press,
