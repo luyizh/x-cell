@@ -155,4 +155,35 @@ describe('table-view', () => {
       expect(ths.length).toBe(numCols + 1);
     });
   });
+
+  describe('row labels', () => {
+    it('has valid row labels', () => {
+      // set up the initial state
+      const numCols = 6;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+
+      // inspect the initial state
+      let rowLabels = document.getElementsByClassName('rowLabel');
+      let labelTexts = Array.from(rowLabels).map(el => el.textContent);
+      expect(labelTexts).toEqual(['', '1', '2', '3', '4', '5', 'Sum']);
+    });
+
+    it('has correct number of row labels', () => {
+      // set up the initial state
+      const numCols = 6;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+
+      // inspect the initial state
+      let rowLabels = document.getElementsByClassName('rowLabel');
+      expect(rowLabels.length).toBe(numRows + 2);
+    });
+
+  });
+
 });

@@ -154,6 +154,8 @@ class TableView {
 
 		// add blank row number
 		const blankRowLabel = createTH();
+		blankRowLabel.id = "row0";
+		blankRowLabel.className = "rowLabel";
 		fragment.appendChild(blankRowLabel);
 
 		for (let row = 0; row < this.model.numRows; row++) {
@@ -161,6 +163,8 @@ class TableView {
 			const tr = createTR();
 			// create each row label
 			const rowLabel = createTH(row + 1);
+			rowLabel.id = "row" + (row + 1).toString();
+			rowLabel.className = "rowLabel";
 			tr.appendChild(rowLabel);
 
 			// add each row to fragment
@@ -169,6 +173,8 @@ class TableView {
 
 		// create sum row label
 		const sumRowLabel = createTH('Sum');
+		sumRowLabel.id = "rowSum";
+		sumRowLabel.className = "rowLabel";
 		fragment.appendChild(sumRowLabel);
 
 		// clear footer row
