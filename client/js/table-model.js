@@ -92,6 +92,10 @@ class TableModel {
 		this.colHighlighted = col;
 	}
 
+	computeSum(colNumber, rowStart, rowEnd) {
+		return 123;
+	}
+
 	getSumOfColumn(col) {		
 		const values = [];
 		

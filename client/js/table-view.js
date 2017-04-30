@@ -300,9 +300,33 @@ class TableView {
 
 	handleFormulaBarChange(evt) {
 		const value = this.formulaBarEl.value;
-		this.model.setValue(this.currentCellLocation, value);
-		this.renderTableBody();
-		this.renderTableFooter();
+		if (value.substring(0, 5) === "=SUM(" && 
+			  value.includes(":") && 
+			  value.substring(value.length - 1) === ")") {
+			console.log("sum is here");
+
+		  const colonIndex = value.indexOf(":");
+		  const colLetter = value.substring(5, 6);
+		  const colLetter2 = value.substring(colonIndex + 1, colonIndex + 2);
+		  // need colLetter and colLetter2 to match
+		  // need colNumber to be within range of present spreadsheet
+		  // need rowStart < rowEnd
+		  // need rowStart and rowEnd to be within range of present spreadsheet
+		  const colNumber = colLetter.charCodeAt(0) - 64;
+		  const rowStart = value.substring(6, colonIndex);
+		  const rowEnd = value.substring(colonIndex + 2, value.length - 1);
+
+		  const sum = this.model.computeSum(colNumber, rowStart, rowEnd);
+
+		  this.model.setValue(this.currentCellLocation, sum.toString());
+		  this.renderTableBody();
+		  this.renderTableFooter();
+		}
+		else {
+			this.model.setValue(this.currentCellLocation, value);
+		  this.renderTableBody();
+		  this.renderTableFooter();
+		}
 	}
 
 	handleSheetClick(evt) {
