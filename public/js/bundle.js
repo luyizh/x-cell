@@ -55,6 +55,8 @@ class TableModel {
 		this.numCols = numCols;
 		this.numRows = numRows;
 		this.data = {};
+
+		this.colors = {};
 	}
 
 	_getCellId(location) {
@@ -67,6 +69,24 @@ class TableModel {
 
 	setValue(location, value) {
 		this.data[this._getCellId(location)] = value;
+	}
+
+	getColor(location) {
+		return this.colors[this._getCellId(location)];
+	}
+
+	setColor(location, color) {
+		this.colors[this._getCellId(location)] = color;
+	}
+
+	// set this.colors accordingly
+	hilightRow(row) {
+		// clear color inventory
+		this.colors = {};
+		// highlight all cells in that row
+		for (let col = 0; col < this.numCols; col++) {
+			this.setColor({ col: col, row: row - 1}, "yellow");
+		}
 	}
 
 	getSumOfColumn(col) {		
@@ -224,6 +244,10 @@ class TableView {
 				const position = { col: col, row: row};
 				const value = this.model.getValue(position);
 				const td = createTD(value);
+
+				// if the color at the position is undefined, set to white
+				// otherwise highlight
+				td.style.backgroundColor = (this.model.getColor(position) || "white");
 				
 				if (this.isCurrentCell(col, row)) {
 					td.className = 'current-cell';
@@ -264,47 +288,11 @@ class TableView {
 	handleRowLabelClick(event) {
 		// get id of row that was clicked
 		const rowNumber = event.target.id.slice(3);
-		console.log(rowNumber);
 		
 		// redraw table with that row highlighted
-		this.highlightRow(rowNumber);
-	}
+		this.model.hilightRow(rowNumber);
+		this.renderTableBody();
 
-	highlightRow(rowNumber) {
-
-		const fragment = document.createDocumentFragment();
-		
-		for (let row = 0; row < this.model.numRows; row++) {
-			// create each row
-			const tr = createTR();
-
-			// create each standard cell
-			for (let col = 0; col < this.model.numCols; col++) {
-				
-				const position = { col: col, row: row};
-				const value = this.model.getValue(position);
-				const td = createTD(value);
-				
-				if (row === rowNumber) {
-					td.style.backgroundColor = "yellow";
-				}
-				
-				if (this.isCurrentCell(col, row)) {
-					td.className = 'current-cell';
-				}
-
-				// add each standard cell to row
-				tr.appendChild(td); 
-			
-			}
-
-			// add each row to fragment
-			fragment.appendChild(tr);
-		}
-		// clear sheet body of previous children
-		removeChildren(this.sheetBodyEl);
-		// add fragment to sheet body
-		this.sheetBodyEl.appendChild(fragment);
 	}
 
 

@@ -3,6 +3,8 @@ class TableModel {
 		this.numCols = numCols;
 		this.numRows = numRows;
 		this.data = {};
+
+		this.colors = {};
 	}
 
 	_getCellId(location) {
@@ -15,6 +17,24 @@ class TableModel {
 
 	setValue(location, value) {
 		this.data[this._getCellId(location)] = value;
+	}
+
+	getColor(location) {
+		return this.colors[this._getCellId(location)];
+	}
+
+	setColor(location, color) {
+		this.colors[this._getCellId(location)] = color;
+	}
+
+	// set this.colors accordingly
+	hilightRow(row) {
+		// clear color inventory
+		this.colors = {};
+		// highlight all cells in that row
+		for (let col = 0; col < this.numCols; col++) {
+			this.setColor({ col: col, row: row - 1}, "yellow");
+		}
 	}
 
 	getSumOfColumn(col) {		
