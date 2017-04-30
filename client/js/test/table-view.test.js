@@ -110,4 +110,80 @@ describe('table-view', () => {
   	});
   });
 
+  describe('add row', () => {
+    it('adds row when clicked', () => {
+      // set up initial state
+      const numCols = 10;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+      // inspect initial state
+      let trs = document.querySelectorAll('TBODY TR');
+      expect(trs.length).toBe(5);
+      // simulate user action
+      let addRow = document.getElementById('add-row');
+      addRow.click();
+      // inspect resulting state
+      trs = document.querySelectorAll('TBODY TR');
+      expect(trs.length).toBe(6);
+    });
+  });
+
+  describe('add column', () => {
+    it('adds column when clicked', () => {
+      // set up initial state
+      const numCols = 10;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+      // inspect initial state
+      let trs = document.querySelectorAll('TBODY TR');
+      expect(trs[0].cells.length).toBe(10);
+
+      let ths = document.querySelectorAll('THEAD TH');
+      expect(ths.length).toBe(numCols);
+      // simulate user action
+      let addColumn = document.getElementById('add-column');
+      addColumn.click();
+      // inspect resulting state
+      trs = document.querySelectorAll('TBODY TR');
+      expect(trs[0].cells.length).toBe(11);
+
+      ths = document.querySelectorAll('THEAD TH');
+      expect(ths.length).toBe(numCols + 1);
+    });
+  });
+
+  describe('row labels', () => {
+    it('has valid row labels', () => {
+      // set up the initial state
+      const numCols = 6;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+
+      // inspect the initial state
+      let rowLabels = document.getElementsByClassName('rowLabel');
+      let labelTexts = Array.from(rowLabels).map(el => el.textContent);
+      expect(labelTexts).toEqual(['', '1', '2', '3', '4', '5', 'Sum']);
+    });
+
+    it('has correct number of row labels', () => {
+      // set up the initial state
+      const numCols = 6;
+      const numRows = 5;
+      const model = new TableModel(numCols, numRows);
+      const view = new TableView(model);
+      view.init();
+
+      // inspect the initial state
+      let rowLabels = document.getElementsByClassName('rowLabel');
+      expect(rowLabels.length).toBe(numRows + 2);
+    });
+
+  });
+
 });

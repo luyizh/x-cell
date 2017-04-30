@@ -20,6 +20,12 @@ class TableView {
 		this.headerRowEl = document.querySelector('THEAD TR');
 		this.sheetBodyEl = document.querySelector('TBODY');
 		this.formulaBarEl = document.querySelector('#formula-bar');
+		this.footerRowEl = document.querySelector('TFOOT TR');
+
+		this.addColumnEl = document.getElementById('add-column');
+		this.addRowEl = document.getElementById('add-row');
+
+		this.rowLabelsEl = document.getElementById('row-labels');
 	}
 
 	initCurrentCell() {
@@ -38,36 +44,88 @@ class TableView {
 	  this.formulaBarEl.focus();
 	}
 
-
 	renderTable() {
 		this.renderTableHeader();
 		this.renderTableBody();
+		this.renderTableFooter();
+
+		this.renderRowLabels();
 	}
 	
-	renderTableHeader() {
-		// clear header row
-		removeChildren(this.headerRowEl);
+	renderRowLabels() {
+		const fragment = document.createDocumentFragment();
+
+		// add blank row number
+		const blankRowLabel = createTH();
+		blankRowLabel.id = "row0";
+		blankRowLabel.className = "rowLabel";
+		fragment.appendChild(blankRowLabel);
+
+		for (let row = 0; row < this.model.numRows; row++) {
+			// create each row
+			const tr = createTR();
+			// create each row label
+			const rowLabel = createTH(row + 1);
+			rowLabel.id = "row" + (row + 1).toString();
+			rowLabel.className = "rowLabel";
+			tr.appendChild(rowLabel);
+
+			// add each row to fragment
+			fragment.appendChild(tr);
+		}
+
+		// create sum row label
+		const sumRowLabel = createTH('Sum');
+		sumRowLabel.id = "rowSum";
+		sumRowLabel.className = "rowLabel";
+		fragment.appendChild(sumRowLabel);
+
+		// clear footer row
+		removeChildren(this.rowLabelsEl);
+		this.rowLabelsEl.appendChild(fragment);
+	}
+
+	renderTableHeader() {		
+		const fragment = document.createDocumentFragment();
+		
 		// get letters and build elements
 		getLetterRange('A', this.model.numCols)
 		  .map(colLabel => createTH(colLabel))
-		  .forEach(th => this.headerRowEl.appendChild(th));
+		  .forEach(th => fragment.appendChild(th));
+		
+		// clear header row
+		removeChildren(this.headerRowEl);
+		// add fragment to header
+		this.headerRowEl.appendChild(fragment);
 	}
 
+	renderTableFooter() {
+		const fragment = document.createDocumentFragment();
 
-	isCurrentCell(col, row) {
-		return this.currentCellLocation.col === col &&
-		       this.currentCellLocation.row === row;
+		// create footer cells with appropriate sums
+		for (let col = 0; col < this.model.numCols; col++) {
+			const sum = this.model.getSumOfColumn(col);
+			const td = createTD(sum);
+			fragment.appendChild(td);
+		}
+		
+		// clear footer row
+		removeChildren(this.footerRowEl);
+		// add fragment to footer
+		this.footerRowEl.appendChild(fragment);
 	}
 
 	renderTableBody() {
 		const fragment = document.createDocumentFragment();
+		
 		for (let row = 0; row < this.model.numRows; row++) {
 			// create each row
 			const tr = createTR();
+
+			// create each standard cell
 			for (let col = 0; col < this.model.numCols; col++) {
-				const position = { col: col, row: row };
+				const position = { col: col, row: row};
 				const value = this.model.getValue(position);
-				// create each standard cell
 				const td = createTD(value);
 				
 				if (this.isCurrentCell(col, row)) {
@@ -86,17 +144,52 @@ class TableView {
 		this.sheetBodyEl.appendChild(fragment);
 	}
 
+	isCurrentCell(col, row) {
+		return this.currentCellLocation.col === col &&
+		       this.currentCellLocation.row === row;
+	}
+
 	attachEventHandlers() {
 		this.sheetBodyEl.addEventListener('click', this.
 			handleSheetClick.bind(this));
 		this.formulaBarEl.addEventListener('keyup', this.
 			handleFormulaBarChange.bind(this));
+		
+		this.addRowEl.addEventListener('click', this.
+			handleAddRowClick.bind(this));
+		this.addColumnEl.addEventListener('click', this.
+			handleAddColumnClick.bind(this));
+	}
+
+	handleAddRowClick(event) {
+		// increment row number
+		this.model.numRows++;
+		// redraw table
+		//this.renderTableHeader();
+		this.renderTableBody();
+		this.renderTableFooter();
+
+		this.renderRowLabels();
+	}
+
+	handleAddColumnClick(event) {
+		// increment column number
+		this.model.numCols++;
+		// redraw table
+		this.renderTableHeader();
+		this.renderTableBody();
+		this.renderTableFooter();
+
+		//this.renderRowLabels();
 	}
 
 	handleFormulaBarChange(evt) {
 		const value = this.formulaBarEl.value;
 		this.model.setValue(this.currentCellLocation, value);
 		this.renderTableBody();
+		this.renderTableFooter();
+
+		//this.renderRowLabels();
 	}
 
 	handleSheetClick(evt) {
@@ -105,7 +198,10 @@ class TableView {
 
 		this.currentCellLocation = { col: col, row: row };
 		this.renderTableBody();
+		this.renderTableFooter();
 		this.renderFormulaBar();
+
+		//this.renderRowLabels();
 	}
 }
 
