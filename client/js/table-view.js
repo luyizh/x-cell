@@ -240,7 +240,7 @@ class TableView {
 
 			// shift data
 			console.log("Shift data needed row", this.model.rowHighlighted); 
-			//this.model.shiftDataRow(this.model.rowHighlighted);
+			this.model.shiftDataRow(this.model.rowHighlighted);
 		}
 		
 		// if a column is highlighted at time of press,

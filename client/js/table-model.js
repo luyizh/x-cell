@@ -40,6 +40,26 @@ class TableModel {
 		}
     this.data = shiftedData;
 	}*/
+	shiftDataRow(row) {
+		let shiftedData = {};
+		//shiftedData["0:4"] = "hi";
+		//shiftedData["1:5"] = "hello";
+		for (let key in this.data) {
+			// get column and row numbers of any existing entries in spreadsheet
+			const colNum = parseInt(key.split(":")[0], 10);
+			const rowNum = parseInt(key.split(":")[1], 10);
+			// add them, shifted, to new data
+			if (rowNum >= row) {
+				shiftedData[colNum.toString() + ":" + (rowNum+1).toString()] = this.data[key];
+			} else {
+				shiftedData[key] = this.data[key]
+			}	
+		}
+		// replace data with newly generated data
+		this.data = shiftedData;
+		//console.log(this.data);
+
+	}
 
 	highlightRow(row) {
 		// clear color inventory
