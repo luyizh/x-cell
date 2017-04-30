@@ -8,6 +8,7 @@ class TableModel {
 
 		this.rowHighlighted = "none";
 		this.colHighlighted = "none";
+		this.currentCellHighlighted = true;
 	}
 
 	_getCellId(location) {

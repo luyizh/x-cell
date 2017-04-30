@@ -60,6 +60,7 @@ class TableModel {
 
 		this.rowHighlighted = "none";
 		this.colHighlighted = "none";
+		this.currentCellHighlighted = true;
 	}
 
 	_getCellId(location) {
@@ -251,13 +252,21 @@ class TableView {
 				const value = this.model.getValue(position);
 				const td = createTD(value);
 
-				// if the color at the position is undefined, set to white
-				// otherwise highlight
-				td.style.backgroundColor = (this.model.getColor(position) || "white");
-				
 				if (this.isCurrentCell(col, row)) {
 					td.className = 'current-cell';
+					
+					// if the current cell is not highlighted
+					if (!this.model.currentCellHighlighted) {
+						td.style.backgroundColor = (this.model.getColor(position) || "white");
+					}
 				}
+
+				// if the color at the position is undefined, set to white
+				// otherwise highlight
+				else {
+					td.style.backgroundColor = (this.model.getColor(position) || "white");
+				}
+				
 
 				// add each standard cell to row
 				tr.appendChild(td);
@@ -292,10 +301,13 @@ class TableView {
 	}
 
 	handleRowLabelClick(event) {
+		// clear current cell highlighting
+		this.model.currentCellHighlighted = false;
+
 		// get id of row that was clicked
 		const rowNumber = event.target.id.slice(3);
-		
-		// redraw table with that row highlighted
+			  
+	  // redraw table with that row highlighted
 		this.model.highlightRow(rowNumber);
 		this.renderTableBody();
 
@@ -315,19 +327,25 @@ class TableView {
 		// increment column number
 		this.model.numCols++;
 
-		// if any row highlighted at time of press,
-		// must highlight newly added cells in expanded row
-		if (this.model.rowHighlighted !== "none") {
-		  // clear highlighting
+		// if a current cell is highlighted, redraw the table directly
+		if (this.model.currentCellHighlighted) {
+		  this.renderTableHeader();
+		  this.renderTableBody();
+		  this.renderTableFooter();
+		
+		// if a row is highlighted at time of press,
+		// must highlight newly added cells in expanded row before redrawing
+		} else if (this.model.rowHighlighted !== "none") {
+      // clear highlighting
 		  this.model.colors = {};
 		  // re-highlight
 		  this.model.highlightRow(this.model.rowHighlighted);
-		}
 
-		// redraw table
-		this.renderTableHeader();
-		this.renderTableBody();
-		this.renderTableFooter();
+		  this.renderTableHeader();
+		  this.renderTableBody();
+		  this.renderTableFooter();
+		}
+		
 	}
 
 	handleFormulaBarChange(evt) {
@@ -342,6 +360,15 @@ class TableView {
 		const row = evt.target.parentElement.rowIndex - 1;
 
 		this.currentCellLocation = { col: col, row: row };
+		
+		// clear any row/column highlighting
+		this.model.colors = {};
+		this.rowHighlighted = "none";
+		this.colHighlighted = "none";
+
+		// turn cell highlighting back on
+		this.model.currentCellHighlighted = true;
+
 		this.renderTableBody();
 		this.renderTableFooter();
 		this.renderFormulaBar();		
