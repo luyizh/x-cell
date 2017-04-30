@@ -159,16 +159,64 @@ class TableView {
 			handleAddRowClick.bind(this));
 		this.addColumnEl.addEventListener('click', this.
 			handleAddColumnClick.bind(this));
+
+		this.rowLabelsEl.addEventListener('click', this.
+			handleRowLabelClick.bind(this));
 	}
+
+	handleRowLabelClick(event) {
+		// get id of row that was clicked
+		const rowNumber = event.target.id.slice(3);
+		console.log(rowNumber);
+		
+		// redraw table with that row highlighted
+		this.highlightRow(rowNumber);
+	}
+
+	highlightRow(rowNumber) {
+
+		const fragment = document.createDocumentFragment();
+		
+		for (let row = 0; row < this.model.numRows; row++) {
+			// create each row
+			const tr = createTR();
+
+			// create each standard cell
+			for (let col = 0; col < this.model.numCols; col++) {
+				
+				const position = { col: col, row: row};
+				const value = this.model.getValue(position);
+				const td = createTD(value);
+				
+				if (row === rowNumber) {
+					td.style.backgroundColor = "yellow";
+				}
+				
+				if (this.isCurrentCell(col, row)) {
+					td.className = 'current-cell';
+				}
+
+				// add each standard cell to row
+				tr.appendChild(td); 
+			
+			}
+
+			// add each row to fragment
+			fragment.appendChild(tr);
+		}
+		// clear sheet body of previous children
+		removeChildren(this.sheetBodyEl);
+		// add fragment to sheet body
+		this.sheetBodyEl.appendChild(fragment);
+	}
+
 
 	handleAddRowClick(event) {
 		// increment row number
 		this.model.numRows++;
 		// redraw table
-		//this.renderTableHeader();
 		this.renderTableBody();
 		this.renderTableFooter();
-
 		this.renderRowLabels();
 	}
 
@@ -179,8 +227,6 @@ class TableView {
 		this.renderTableHeader();
 		this.renderTableBody();
 		this.renderTableFooter();
-
-		//this.renderRowLabels();
 	}
 
 	handleFormulaBarChange(evt) {
@@ -188,8 +234,6 @@ class TableView {
 		this.model.setValue(this.currentCellLocation, value);
 		this.renderTableBody();
 		this.renderTableFooter();
-
-		//this.renderRowLabels();
 	}
 
 	handleSheetClick(evt) {
@@ -199,9 +243,7 @@ class TableView {
 		this.currentCellLocation = { col: col, row: row };
 		this.renderTableBody();
 		this.renderTableFooter();
-		this.renderFormulaBar();
-
-		//this.renderRowLabels();
+		this.renderFormulaBar();		
 	}
 }
 
