@@ -210,7 +210,7 @@ class TableView {
 
 		// get index of column that was clicked
 		const colNumber = event.target.id.slice(3);
-		console.log(colNumber);
+		//console.log(colNumber);
 
 		// redraw table with that column highlighted
 		this.model.highlightCol(colNumber);
@@ -222,15 +222,6 @@ class TableView {
 		// increment row number
 		this.model.numRows++;
 		
-		// if a row is highlighted at time of press
-		if (this.model.rowHighlighted !== "none") {
-			// clear colors and make sure column is not highlighted
-			this.model.colors = {};
-			this.model.colHighlighted = "none";
-			// re-highlight appropriate row
-			this.model.highlightRow(this.model.rowHighlighted);
-		}
-
 		// if a current cell is highlighted, redraw the table directly
 		if (this.model.currentCellHighlighted) {
 			// first clear colors and make sure column/row are not highlighted
@@ -238,10 +229,23 @@ class TableView {
 			this.model.rowHighlighted = "none";
 			this.model.colors = {};
 		}
+
+		// if a row is highlighted at time of press
+		else if (this.model.rowHighlighted !== "none") {
+			// clear colors and make sure column is not highlighted
+			this.model.colors = {};
+			this.model.colHighlighted = "none";
+			// re-highlight appropriate row
+			this.model.highlightRow(this.model.rowHighlighted);
+
+			// shift data
+			console.log("Shift data needed row", this.model.rowHighlighted); 
+			//this.model.shiftDataRow(this.model.rowHighlighted);
+		}
 		
 		// if a column is highlighted at time of press,
 		// must highlight newly added cells in expanded row before redrawing
-		if (this.model.colHighlighted !== "none") {
+		else if (this.model.colHighlighted !== "none") {
       // clear colors and make sure row is not highlighted
 		  this.model.colors = {};
 		  this.model.rowHighlighted = "none";
@@ -260,15 +264,6 @@ class TableView {
 		// increment column number
 		this.model.numCols++;
 
-		// if a col is highlighted at time of press,
-		if (this.model.colHighlighted !== "none") {
-			// clear colors and make sure row is not highlighted
-			this.model.colors = {};
-			this.model.rowHighlighted = "none";
-			// re-highlight appropriate column
-			this.model.highlightCol(this.model.colHighlighted);	  
-		}
-
 		// if a current cell is highlighted, redraw the table directly
 		if (this.model.currentCellHighlighted) {
 			// clear colors and make sure row/column are not highlighted
@@ -276,10 +271,22 @@ class TableView {
 			this.model.rowHighlighted = "none";
 			this.model.colors = {};
 		}
+
+		// if a col is highlighted at time of press,
+		else if (this.model.colHighlighted !== "none") {
+			// clear colors and make sure row is not highlighted
+			this.model.colors = {};
+			this.model.rowHighlighted = "none";
+			// re-highlight appropriate column
+			this.model.highlightCol(this.model.colHighlighted);	
+
+			// shift data
+			console.log("Shift data needed col", this.model.colHighlighted);  
+		}
 		
 		// if a row is highlighted at time of press,
 		// must highlight newly added cells in expanded row before redrawing
-		if (this.model.rowHighlighted !== "none") {
+		else if (this.model.rowHighlighted !== "none") {
       // clear highlighting
 		  this.model.colors = {};
 		  // re-highlight

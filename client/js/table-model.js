@@ -31,6 +31,16 @@ class TableModel {
 		this.colors[this._getCellId(location)] = color;
 	}
 
+	/*shiftDataRow(row) {
+		let shiftedData = {};
+		for (key in this.data) {
+			if (key.row === row) {
+				shiftedData[{ col: key.col, row: row + 1}] = this.data[key];
+			}
+		}
+    this.data = shiftedData;
+	}*/
+
 	highlightRow(row) {
 		// clear color inventory
 		this.colors = {};
