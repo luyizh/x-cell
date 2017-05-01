@@ -1,5 +1,5 @@
 class TableModel {
-	constructor(numCols=10, numRows=20) {
+	constructor(numCols=10, numRows=15) {
 		this.numCols = numCols;
 		this.numRows = numRows;
 		this.data = {};

@@ -26,6 +26,9 @@ class TableView {
 		this.addRowEl = document.getElementById('add-row');
 
 		this.rowLabelsEl = document.getElementById('row-labels');
+
+		this.computeSumFormulaEl = document.getElementById('compute-sum-formula');
+
 	}
 
 	initCurrentCell() {
@@ -168,6 +171,9 @@ class TableView {
 	}
 
 	attachEventHandlers() {
+
+		const context = this;
+
 		this.sheetBodyEl.addEventListener('click', this.
 			handleSheetClick.bind(this));
 		this.formulaBarEl.addEventListener('keyup', this.
@@ -183,6 +189,65 @@ class TableView {
 
 		this.headerRowEl.addEventListener('click', this.
 			handleColHeaderClick.bind(this));
+
+		// this works fine
+		this.computeSumFormulaEl.addEventListener('click', this.
+			handleFormulaBarEnter.bind(this));
+
+		// this doesn't work...
+		/*this.formulaBarEl.addEventListener('keypress', function(e) {
+			if (e.key === 'Enter') {
+				console.log('hi');
+				console.log(context.handleFormulaBarEnter);
+				console.log(context)
+				context.handleFormulaBarEnter.bind(e);
+			}
+		});*/
+			
+	}
+
+	handleFormulaBarEnter(event) {
+		const value = this.formulaBarEl.value;
+		
+		// to potentially use sum formula...
+		// must start with correct command, include colon, end with closing paren
+		if (value.substring(0, 5) === "=SUM(" && 
+			  value.includes(":") && 
+			  value.substring(value.length - 1) === ")") {
+
+		  const colonIndex = value.indexOf(":");
+		  const colLetter = value.substring(5, 6);
+		  const colLetter2 = value.substring(colonIndex + 1, colonIndex + 2);
+
+		  const colNumber = colLetter.charCodeAt(0) - 64;
+		  const rowStart = value.substring(6, colonIndex);
+		  const rowEnd = value.substring(colonIndex + 2, value.length - 1);
+
+		  // one more check to see if we can use sum formula...
+		  // need colLetter and colLetter2 to match
+		  // need colNumber to be within range of present spreadsheet
+		  // need rowStart < rowEnd
+		  // need rowStart and rowEnd to be within range of present spreadsheet
+		  if (colLetter === colLetter2 &&
+		  	  1 <= colNumber && colNumber <= this.model.numCols &&
+		  	  rowStart < rowEnd &&
+		  	  1 <= rowStart && rowStart <= this.model.numRows &&
+		  	  1 <= rowEnd && rowEnd <= this.model.numRows) {
+
+		    const sum = this.model.computeSum(colNumber, rowStart, rowEnd);
+
+		    this.model.setValue(this.currentCellLocation, sum.toString());
+		    this.renderTableBody();
+		    this.renderTableFooter();
+		  
+		  } else {
+		  	// if any checks fail, don't use sum formula
+		  	this.model.setValue(this.currentCellLocation, value);
+		    this.renderTableBody();
+		    this.renderTableFooter();
+		  }
+		}
+
 	}
 
 	handleRowLabelClick(event) {
@@ -301,51 +366,9 @@ class TableView {
 	handleFormulaBarChange(evt) {
 		const value = this.formulaBarEl.value;
 		
-		// to potentially use sum formula...
-		// must start with correct command, include colon, end with closing paren
-		if (value.substring(0, 5) === "=SUM(" && 
-			  value.includes(":") && 
-			  value.substring(value.length - 1) === ")") {
-			console.log("sum is here");
-
-		  const colonIndex = value.indexOf(":");
-		  const colLetter = value.substring(5, 6);
-		  const colLetter2 = value.substring(colonIndex + 1, colonIndex + 2);
-
-		  const colNumber = colLetter.charCodeAt(0) - 64;
-		  const rowStart = value.substring(6, colonIndex);
-		  const rowEnd = value.substring(colonIndex + 2, value.length - 1);
-
-		  // one more check to see if we can use sum formula...
-		  // need colLetter and colLetter2 to match
-		  // need colNumber to be within range of present spreadsheet
-		  // need rowStart < rowEnd
-		  // need rowStart and rowEnd to be within range of present spreadsheet
-		  if (colLetter === colLetter2 &&
-		  	  1 <= colNumber && colNumber <= this.model.numCols &&
-		  	  rowStart < rowEnd &&
-		  	  1 <= rowStart && rowStart < this.model.numRows &&
-		  	  1 <= rowEnd && rowEnd < this.model.numRows) {
-
-		    const sum = this.model.computeSum(colNumber, rowStart, rowEnd);
-
-		    this.model.setValue(this.currentCellLocation, sum.toString());
-		    this.renderTableBody();
-		    this.renderTableFooter();
-		  
-		  } else {
-		  	// if any checks fail, don't use sum formula
-		  	this.model.setValue(this.currentCellLocation, value);
-		    this.renderTableBody();
-		    this.renderTableFooter();
-		  }
-		}
-		else {
-			// sum formula not present, just show value
-			this.model.setValue(this.currentCellLocation, value);
-		  this.renderTableBody();
-		  this.renderTableFooter();
-		}
+	  this.model.setValue(this.currentCellLocation, value);
+		this.renderTableBody();
+		this.renderTableFooter();	
 	}
 
 	handleSheetClick(evt) {
