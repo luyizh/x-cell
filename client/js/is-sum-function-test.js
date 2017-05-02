@@ -1,6 +1,7 @@
-const isSumFunction = require('./is-sum-function.js').isSumFunction;
-const cellOfRightForm = require('./is-sum-function.js').cellOfRightForm;
-const ofRightForm = require('./is-sum-function.js').ofRightForm;
+const { ofRightForm: ofRightForm,
+	      isSumFunction: isSumFunction,
+	      cellOfRightForm: cellOfRightForm 
+	    } = require('./is-sum-function');
 
 console.log(ofRightForm('=SUMaaa;(A1:A22)')); // [ 'SUMaaa;', 'A1', 'A22' ]
 console.log(ofRightForm('=hello(A1:mango)')); // [ 'hello', 'A1', 'mango' ]

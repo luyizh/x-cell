@@ -49,13 +49,12 @@ const isSumFunction = function(string) {
 			  cellOfRightForm(startCell) &&
 			  cellOfRightForm(endCell)) {
 			// startCell and endCell must have valid IDs, meaning:
-			// column must match and be in range
-			// row numbers must be in order and in range
+			// column must match and row numbers must be in order
 			const startCol = cellOfRightForm(startCell)[0];
-			const startRow = cellOfRightForm(startCell)[1];
+			const startRow = parseInt(cellOfRightForm(startCell)[1], 10);
 			const endCol = cellOfRightForm(endCell)[0];
-			const endRow = cellOfRightForm(endCell)[1];
-			if (startCol === endCol && startRow < endRow ) { 
+			const endRow = parseInt(cellOfRightForm(endCell)[1], 10);
+			if (startCol === endCol && startRow < endRow) { 
 				// columns must match and rows must be in order
 				return [startCol, startRow, endRow];
 			}

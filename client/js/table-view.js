@@ -3,6 +3,17 @@ const { removeChildren,
 	      createTR,
 	      createTH,
 	      createTD } = require('./dom-util');
+const { ofRightForm: ofRightForm,
+	      isSumFunction: isSumFunction,
+	      cellOfRightForm: cellOfRightForm 
+	    } = require('./is-sum-function');
+
+const parser = require('./parser.js');
+// parser.parse('=SUM(A1:A22)'); gives 
+// { func: 'SUM', params: [ 'A1', 'A22' ] }
+//if (parser.parse('=SUM(A1:A22')) {
+	//console.log('valid input');
+//}
 
 class TableView {
 	constructor(model) {
@@ -91,10 +102,7 @@ class TableView {
 	renderTableHeader() {		
 		const fragment = document.createDocumentFragment();
 		
-		// get letters and build elements
-		//getLetterRange('A', this.model.numCols)
-		  //.map(colLabel => createTH(colLabel))
-		  //.forEach(th => fragment.appendChild(th));
+		// get letters and build elements, each with a unique id
 		const letters = getLetterRange('A', this.model.numCols);
 		for (let col = 0; col < this.model.numCols; col++) {
 			const colLabel = createTH(letters[col]);
@@ -190,62 +198,46 @@ class TableView {
 		this.headerRowEl.addEventListener('click', this.
 			handleColHeaderClick.bind(this));
 
-		// this works fine
 		this.computeSumFormulaEl.addEventListener('click', this.
 			handleFormulaBarEnter.bind(this));
-
-		// this doesn't work...
-		/*this.formulaBarEl.addEventListener('keypress', function(e) {
-			if (e.key === 'Enter') {
-				console.log('hi');
-				console.log(context.handleFormulaBarEnter);
-				console.log(context)
-				context.handleFormulaBarEnter.bind(e);
-			}
-		});*/
 			
 	}
+
+
+
+
+  
 
 	handleFormulaBarEnter(event) {
 		const value = this.formulaBarEl.value;
 		
-		// to potentially use sum formula...
-		// must start with correct command, include colon, end with closing paren
-		if (value.substring(0, 5) === "=SUM(" && 
-			  value.includes(":") && 
-			  value.substring(value.length - 1) === ")") {
-
-		  const colonIndex = value.indexOf(":");
-		  const colLetter = value.substring(5, 6);
-		  const colLetter2 = value.substring(colonIndex + 1, colonIndex + 2);
-
-		  const colNumber = colLetter.charCodeAt(0) - 64;
-		  const rowStart = value.substring(6, colonIndex);
-		  const rowEnd = value.substring(colonIndex + 2, value.length - 1);
-
-		  // one more check to see if we can use sum formula...
-		  // need colLetter and colLetter2 to match
-		  // need colNumber to be within range of present spreadsheet
-		  // need rowStart < rowEnd
-		  // need rowStart and rowEnd to be within range of present spreadsheet
-		  if (colLetter === colLetter2 &&
-		  	  1 <= colNumber && colNumber <= this.model.numCols &&
-		  	  rowStart < rowEnd &&
+		// to potentially use sum formula, value must first be in the right form
+		if (isSumFunction(value) !== false) {
+      
+      // then, need colNumber, rowStart, rowEnd to be 
+			// within range of present spreadsheet
+			const colLetter = isSumFunction(value)[0];
+			const rowStart = isSumFunction(value)[1];
+			const rowEnd = isSumFunction(value)[2];
+			const colNumber = colLetter.charCodeAt(0) - 64;
+			
+			if (1 <= colNumber && colNumber <= this.model.numCols &&
 		  	  1 <= rowStart && rowStart <= this.model.numRows &&
 		  	  1 <= rowEnd && rowEnd <= this.model.numRows) {
-
-		    const sum = this.model.computeSum(colNumber, rowStart, rowEnd);
-
+				
+				// if indeed within range,
+				// compute sum and redraw table to show sum
+			  const sum = this.model.computeSum(colNumber, rowStart, rowEnd);			  
 		    this.model.setValue(this.currentCellLocation, sum.toString());
 		    this.renderTableBody();
 		    this.renderTableFooter();
-		  
-		  } else {
-		  	// if any checks fail, don't use sum formula
-		  	this.model.setValue(this.currentCellLocation, value);
-		    this.renderTableBody();
-		    this.renderTableFooter();
-		  }
+			} 
+		
+	  } else {	
+	    // if any checks fail, don't use sum formula when redrawing table		
+		  this.model.setValue(this.currentCellLocation, value);
+		  this.renderTableBody();
+		  this.renderTableFooter();
 		}
 
 	}
