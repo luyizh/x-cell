@@ -50,7 +50,29 @@ module.exports = {
 	removeChildren: removeChildren
 };
 },{}],4:[function(require,module,exports){
-const ofRightForm = function(string) {
+/*const parser = require('./parser.js');
+// parser.parse('=SUM(A1:A22)'); gives 
+// { func: 'SUM', params: [ 'A1', 'A22' ] }
+//if (parser.parse('=SUM(A1:A22')) {
+	//console.log('valid input');
+//}
+
+// func is all capital letters (at least 0 letters)
+// params are all letters (uppercase or lowercase) or digits
+// if empty param given, it won't be included in the resulting object
+try {
+  const object = parser.parse('=SUM(A1:A22)');
+  const allParams = [];
+  allParams.push(object.func, object.params[0], object.params[1]);
+  console.log(allParams);
+  console.log(object.params.length);
+}
+catch (e) {
+   // statements to handle any exceptions
+   console.log("Fail"); 
+}*/
+
+const isValidFormat = function(string) {
 	// if string is of right form, return array of parameters
 	// otherwise return false
 
@@ -71,7 +93,7 @@ const ofRightForm = function(string) {
 	}
 }
 
-const cellOfRightForm = function(string) {
+const isValidCell = function(string) {
   // see if string is of form "[CapitalLetter][PositiveInteger]"
   // if the string is NOT of that form, return false
   // otherwise return array in form [CapitalLetter, PositiveInteger]
@@ -91,21 +113,21 @@ const isSumFunction = function(string) {
 	// otherwise return false
 
 	// string needs to be of right form
-	if (ofRightForm(string) !== null) {
-		const func = ofRightForm(string)[0];
-		const startCell = ofRightForm(string)[1];
-		const endCell = ofRightForm(string)[2];
+	if (isValidFormat(string) !== null) {
+		const func = isValidFormat(string)[0];
+		const startCell = isValidFormat(string)[1];
+		const endCell = isValidFormat(string)[2];
 		// func needs to be SUM
 		// startCell and endCell must be in valid form
 		if (func === "SUM" &&
-			  cellOfRightForm(startCell) &&
-			  cellOfRightForm(endCell)) {
+			  isValidCell(startCell) &&
+			  isValidCell(endCell)) {
 			// startCell and endCell must have valid IDs, meaning:
 			// column must match and row numbers must be in order
-			const startCol = cellOfRightForm(startCell)[0];
-			const startRow = parseInt(cellOfRightForm(startCell)[1], 10);
-			const endCol = cellOfRightForm(endCell)[0];
-			const endRow = parseInt(cellOfRightForm(endCell)[1], 10);
+			const startCol = isValidCell(startCell)[0];
+			const startRow = parseInt(isValidCell(startCell)[1], 10);
+			const endCol = isValidCell(endCell)[0];
+			const endRow = parseInt(isValidCell(endCell)[1], 10);
 			if (startCol === endCol && startRow < endRow) { 
 				// columns must match and rows must be in order
 				return [startCol, startRow, endRow];
@@ -119,9 +141,9 @@ const isSumFunction = function(string) {
 
 
 module.exports = {
-	ofRightForm: ofRightForm,
+	isValidFormat: isValidFormat,
 	isSumFunction: isSumFunction,
-	cellOfRightForm: cellOfRightForm
+	isValidCell: isValidCell
 };
 },{}],5:[function(require,module,exports){
 module.exports = /*
@@ -839,17 +861,13 @@ const { removeChildren,
 	      createTR,
 	      createTH,
 	      createTD } = require('./dom-util');
-const { ofRightForm: ofRightForm,
+const { isValidFormat: isValidFormat,
 	      isSumFunction: isSumFunction,
-	      cellOfRightForm: cellOfRightForm 
+	      isValidCell: isValidCell
 	    } = require('./is-sum-function');
 
 const parser = require('./parser.js');
-// parser.parse('=SUM(A1:A22)'); gives 
-// { func: 'SUM', params: [ 'A1', 'A22' ] }
-//if (parser.parse('=SUM(A1:A22')) {
-	//console.log('valid input');
-//}
+
 
 class TableView {
 	constructor(model) {

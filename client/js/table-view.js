@@ -3,17 +3,13 @@ const { removeChildren,
 	      createTR,
 	      createTH,
 	      createTD } = require('./dom-util');
-const { ofRightForm: ofRightForm,
+const { isValidFormat: isValidFormat,
 	      isSumFunction: isSumFunction,
-	      cellOfRightForm: cellOfRightForm 
+	      isValidCell: isValidCell
 	    } = require('./is-sum-function');
 
 const parser = require('./parser.js');
-// parser.parse('=SUM(A1:A22)'); gives 
-// { func: 'SUM', params: [ 'A1', 'A22' ] }
-//if (parser.parse('=SUM(A1:A22')) {
-	//console.log('valid input');
-//}
+
 
 class TableView {
 	constructor(model) {
