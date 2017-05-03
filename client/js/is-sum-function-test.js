@@ -16,5 +16,5 @@ console.log(cellOfRightForm('AA1')); // false
 console.log(cellOfRightForm('a1')); // false
 console.log(cellOfRightForm('hello')); // false
 
-console.log(isSumFunction('=SUM(A1:A22)')); // [ 'A', '1', '22' ]
+console.log(isSumFunction('=SUM(A1:A22)')); // [ 'A', 1, 22 ]
 console.log(isSumFunction('=Sum(A1:A22)')); // false
