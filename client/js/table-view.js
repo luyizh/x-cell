@@ -3,12 +3,13 @@ const { removeChildren,
 	      createTR,
 	      createTH,
 	      createTD } = require('./dom-util');
-const { isValidFormat: isValidFormat,
-	      isSumFunction: isSumFunction,
-	      isValidCell: isValidCell
+const { isValidFormat,
+	      isSumFunction,
+	      isValidCell
 	    } = require('./is-sum-function');
 
 const parser = require('./parser.js');
+const { isSumFormula } = require('./is-sum-formula.js');
 
 
 class TableView {
@@ -200,43 +201,31 @@ class TableView {
 	}
 
 
-
-
-  
-
 	handleFormulaBarEnter(event) {
-		const value = this.formulaBarEl.value;
+		// see if value is a valid sum formula
+		const value = this.formulaBarEl.value;	
+		const validSumFormula = isSumFormula(value, this.model.numCols, this.model.numRows);
 		
-		// to potentially use sum formula, value must first be in the right form
-		if (isSumFunction(value) !== false) {
-      
-      // then, need colNumber, rowStart, rowEnd to be 
-			// within range of present spreadsheet
-			const colLetter = isSumFunction(value)[0];
-			const rowStart = isSumFunction(value)[1];
-			const rowEnd = isSumFunction(value)[2];
-			const colNumber = colLetter.charCodeAt(0) - 64;
-			
-			if (1 <= colNumber && colNumber <= this.model.numCols &&
-		  	  1 <= rowStart && rowStart <= this.model.numRows &&
-		  	  1 <= rowEnd && rowEnd <= this.model.numRows) {
-				
-				// if indeed within range,
-				// compute sum and redraw table to show sum
-			  const sum = this.model.computeSum(colNumber, rowStart, rowEnd);			  
-		    this.model.setValue(this.currentCellLocation, sum.toString());
-		    this.renderTableBody();
-		    this.renderTableFooter();
-			} 
+		// if value is a valid sum formula,
+		// compute sum and set value of current cell to sum
+		if (validSumFormula !== false) {		
+			const rowStart = validSumFormula[1];
+			const rowEnd = validSumFormula[2];
+			const colNumber = validSumFormula[0];
+						
+			const sum = this.model.computeSum(colNumber, rowStart, rowEnd);		  
+		  this.model.setValue(this.currentCellLocation, sum.toString());
 		
+		// if value invalid, keep value of current cell the same	
 	  } else {	
-	    // if any checks fail, don't use sum formula when redrawing table		
 		  this.model.setValue(this.currentCellLocation, value);
-		  this.renderTableBody();
-		  this.renderTableFooter();
 		}
-
+		
+		// redraw table
+		this.renderTableBody();
+		this.renderTableFooter();
 	}
+
 
 	handleRowLabelClick(event) {
 		// clear current cell highlighting
