@@ -14,6 +14,11 @@ td {
   background-color: lightblue;
 }
 
+.current-row,
+.current-col {
+  background-color: yellow;
+}
+
 #formula-bar {
   background-color: lightgreen;
   border: 1px solid black;

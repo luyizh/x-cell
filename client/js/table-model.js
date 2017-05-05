@@ -3,12 +3,6 @@ class TableModel {
     this.numCols = numCols;
     this.numRows = numRows;
     this.data = {};
-
-    this.colors = {};
-
-    this.rowHighlighted = "none";
-    this.colHighlighted = "none";
-    this.currentCellHighlighted = true;
   }
 
   _getCellId(location) {
@@ -23,13 +17,6 @@ class TableModel {
     this.data[this._getCellId(location)] = value;
   }
 
-  getColor(location) {
-    return this.colors[this._getCellId(location)];
-  }
-
-  setColor(location, color) {
-    this.colors[this._getCellId(location)] = color;
-  }
 
 
   shiftDataRow(row) {
@@ -66,31 +53,7 @@ class TableModel {
     this.data = shiftedData;
   }
 
-  highlightRow(row) {
-    // clear color inventory
-    this.colors = {};
-    
-    // set this.colors accordingly to reflect that
-    // all cells in that row have been highlighted 
-    for (let col = 0; col < this.numCols; col++) {
-      this.setColor({ col: col, row: row - 1}, "yellow");
-    }
-    
-    this.rowHighlighted = row;
-  }
 
-  highlightCol(col) {
-    // clear color inventory
-    this.colors = {};
-    
-    // set this.colors accordingly to reflect that
-    // all cells in that col have been highlighted 
-    for (let row = 0; row < this.numRows; row++) {
-      this.setColor({ col: col - 1, row: row }, "yellow");
-    }
-    
-    this.colHighlighted = col;
-  }
 
   computeSum(colNumber, rowStart, rowEnd) {
     const values = [];
