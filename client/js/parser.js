@@ -142,8 +142,8 @@ module.exports = /*
         peg$startRuleFunction  = peg$parsesheet_function,
 
         peg$c0 = function(func, params) {
-          	return {
-            	func: func,
+            return {
+              func: func,
                 params: params
             };
           },
@@ -157,7 +157,7 @@ module.exports = /*
         peg$c8 = ")",
         peg$c9 = peg$literalExpectation(")", false),
         peg$c10 = function(param) {
-          	return param;
+            return param;
           },
         peg$c11 = /^[a-zA-Z0-9]/,
         peg$c12 = peg$classExpectation([["a", "z"], ["A", "Z"], ["0", "9"]], false, false),
