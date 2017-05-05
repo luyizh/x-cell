@@ -5,7 +5,7 @@ const TableView = require('./table-view');
 const model = new TableModel();
 const tableView = new TableView(model);
 tableView.init();
-},{"./table-model":7,"./table-view":8}],2:[function(require,module,exports){
+},{"./table-model":6,"./table-view":7}],2:[function(require,module,exports){
 const getRange = function(fromNum, toNum) {
 	return Array.from({ length: toNum - fromNum + 1 },
 		(unused, i) => i + fromNum);
@@ -50,143 +50,59 @@ module.exports = {
 	removeChildren: removeChildren
 };
 },{}],4:[function(require,module,exports){
-const isSumFormula = function(string, numCols, numRows) {
-	// return [col, startRow, endRow] if string is a sum function
-	// otherwise return false
+const getColAndRow = function(cellId) {
+  const col = cellId[0];
+  const row = cellId.slice(1);
+  return [col, row];
+}
 
+const isSumFormula = function(string, numCols, numRows) {
 	// string must be in form
-	// =SUM([One capital letter][1 or more digits]:[One capital letter][1 or more digits])
-	const re = /=SUM\(([A-Z]\d+):([A-Z]\d+)\)$/;
+	// =SUM([One capital letter][0 or more digits]:[One capital letter][0 or more digits])
+	const re = /=SUM\(([A-Z]\d*):([A-Z]\d*)\)$/;
 
 	// if string is in valid format, get col letters and row numbers
 	if (string.match(re) !== null) {
-
-		const numberPattern = /\d+/g;
-		const letterPattern = /[A-Z]/g;
-
-		const colNumbers = string.slice(4) // don't get letters in "SUM"
-		                    .match(letterPattern)
-		                    .map(x => x.charCodeAt(0) - 64); 
-		const rowNumbers = string.match(numberPattern)
-		                    .map(x => parseInt(x, 10));
-
+		const startCellCol = getColAndRow(string.match(re)[1])[0].charCodeAt(0) - 64;
+		let startCellRow = getColAndRow(string.match(re)[1])[1];
+		const endCellCol = getColAndRow(string.match(re)[2])[0].charCodeAt(0) - 64;
+		let endCellRow = getColAndRow(string.match(re)[2])[1];
+    
 		// col numbers must match and be in range
-		// row numbers must be in order and be in range
-		if (colNumbers[0] === colNumbers[1] && 
-			  rowNumbers[0] < rowNumbers[1] &&
-		    1 <= rowNumbers[0] && rowNumbers[0] <= numRows &&
-		    1 <= rowNumbers[1] && rowNumbers[1] <= numRows && 
-		    1 <= colNumbers[0] && colNumbers[0] <= numCols &&
-		    1 <= colNumbers[1] && colNumbers[1] <= numCols ) {
-			// if all conditions passed, return array
-		return [colNumbers[0], rowNumbers[0], rowNumbers[1]];
-		}
+		if (startCellCol === endCellCol &&
+        1 <= startCellCol && startCellCol <= numCols &&
+		    1 <= endCellCol && endCellCol <= numCols) {
+
+			// if no row numbers given, want all rows
+		  if (startCellRow === "" && endCellRow === "") {
+		  	startCellRow = 1;
+		  	endCellRow = numRows;
+		
+		  	return [startCellCol, startCellRow, endCellRow];  	
+		  } 
+
+		  // otherwise row numbers must be in order and be in range
+		  else if (startCellRow < endCellRow && 
+		  	  1 <= startCellRow && startCellRow <= numRows &&
+		      1 <= endCellRow && endCellRow <= numRows) {
+	
+		  	return [startCellCol, parseInt(startCellRow, 10), parseInt(endCellRow, 10)];	    
+		  }
+
+		} 
 	}
   // if any conditions failed
 	return false;
 }
 
 
+
+
 module.exports = {
 	isSumFormula: isSumFormula,
+	getColAndRow: getColAndRow
 };
 },{}],5:[function(require,module,exports){
-/*const parser = require('./parser.js');
-// parser.parse('=SUM(A1:A22)'); gives 
-// { func: 'SUM', params: [ 'A1', 'A22' ] }
-//if (parser.parse('=SUM(A1:A22')) {
-	//console.log('valid input');
-//}
-
-// func is all capital letters (at least 0 letters)
-// params are all letters (uppercase or lowercase) or digits
-// if empty param given, it won't be included in the resulting object
-try {
-  const object = parser.parse('=SUM(A1:A22)');
-  const allParams = [];
-  allParams.push(object.func, object.params[0], object.params[1]);
-  console.log(allParams);
-  console.log(object.params.length);
-}
-catch (e) {
-   // statements to handle any exceptions
-   console.log("Fail"); 
-}*/
-
-const isValidFormat = function(string) {
-	// if string is of right form, return array of parameters
-	// otherwise return false
-
-	// see if string is of form "= [stuff1] ( [stuff2] : [stuff3] )"
-	// stuff1 contains no "("; stuff2 contains no ":"; stuff3 contains no ")"
-	// stuff1, stuff2, stuff3 must be at least one character
-	const symbolTester = /^=([^\(]+)\(([^:]+):([^\)]+)\)$/
-
-	// parameters is null if string is NOT of appropriate form
-	// otherwise, parameters[1], parameters[2] and parameters[3]
-	// contain the needed parameters
-	const parameters = string.match(symbolTester);
-	
-	if (parameters === null) {
-		return false;
-	} else {
-		return parameters.slice(1, 4); // [stuff1, stuff2, stuff3]
-	}
-}
-
-const isValidCell = function(string) {
-  // see if string is of form "[CapitalLetter][PositiveInteger]"
-  // if the string is NOT of that form, return false
-  // otherwise return array in form [CapitalLetter, PositiveInteger]
-
-  const tester = /^([A-Z]{1})([0-9]+)$/
-  const result = string.match(tester);
-
-  if (result === null) {
-  	return false;
-  } else {
-  	return result.slice(1, 3);
-  }
-}
-
-const isSumFunction = function(string) {
-	// return [startCol, startRow, endRow] if string is a sum function
-	// otherwise return false
-
-	// string needs to be of right form
-	if (isValidFormat(string) !== null) {
-		const func = isValidFormat(string)[0];
-		const startCell = isValidFormat(string)[1];
-		const endCell = isValidFormat(string)[2];
-		// func needs to be SUM
-		// startCell and endCell must be in valid form
-		if (func === "SUM" &&
-			  isValidCell(startCell) &&
-			  isValidCell(endCell)) {
-			// startCell and endCell must have valid IDs, meaning:
-			// column must match and row numbers must be in order
-			const startCol = isValidCell(startCell)[0];
-			const startRow = parseInt(isValidCell(startCell)[1], 10);
-			const endCol = isValidCell(endCell)[0];
-			const endRow = parseInt(isValidCell(endCell)[1], 10);
-			if (startCol === endCol && startRow < endRow) { 
-				// columns must match and rows must be in order
-				return [startCol, startRow, endRow];
-			}
-		}
-	}
-	// if any of those conditions fail, return false
-	return false;
-}
-
-
-
-module.exports = {
-	isValidFormat: isValidFormat,
-	isSumFunction: isSumFunction,
-	isValidCell: isValidCell
-};
-},{}],6:[function(require,module,exports){
 module.exports = /*
  * Generated by PEG.js 0.10.0.
  *
@@ -752,7 +668,7 @@ module.exports = /*
   };
 })();
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 class TableModel {
 	constructor(numCols=10, numRows=15) {
 		this.numCols = numCols;
@@ -896,19 +812,17 @@ class TableModel {
 }
 
 module.exports = TableModel;
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 const { getLetterRange } = require('./array-util');
 const { removeChildren, 
 	      createTR,
 	      createTH,
 	      createTD } = require('./dom-util');
-const { isValidFormat,
-	      isSumFunction,
-	      isValidCell
-	    } = require('./is-sum-function');
 
 const parser = require('./parser.js');
-const { isSumFormula } = require('./is-sum-formula.js');
+const { isSumFormula,
+	      getColAndRow
+	    } = require('./is-sum-formula.js');
 
 
 class TableView {
@@ -1268,4 +1182,4 @@ class TableView {
 }
 
 module.exports = TableView;
-},{"./array-util":2,"./dom-util":3,"./is-sum-formula.js":4,"./is-sum-function":5,"./parser.js":6}]},{},[1]);
+},{"./array-util":2,"./dom-util":3,"./is-sum-formula.js":4,"./parser.js":5}]},{},[1]);

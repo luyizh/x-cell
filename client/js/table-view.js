@@ -3,13 +3,11 @@ const { removeChildren,
 	      createTR,
 	      createTH,
 	      createTD } = require('./dom-util');
-const { isValidFormat,
-	      isSumFunction,
-	      isValidCell
-	    } = require('./is-sum-function');
 
 const parser = require('./parser.js');
-const { isSumFormula } = require('./is-sum-formula.js');
+const { isSumFormula,
+	      getColAndRow
+	    } = require('./is-sum-formula.js');
 
 
 class TableView {

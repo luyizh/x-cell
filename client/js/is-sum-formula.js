@@ -1,40 +1,52 @@
-const isSumFormula = function(string, numCols, numRows) {
-	// return [col, startRow, endRow] if string is a sum function
-	// otherwise return false
+const getColAndRow = function(cellId) {
+  const col = cellId[0];
+  const row = cellId.slice(1);
+  return [col, row];
+}
 
+const isSumFormula = function(string, numCols, numRows) {
 	// string must be in form
-	// =SUM([One capital letter][1 or more digits]:[One capital letter][1 or more digits])
-	const re = /=SUM\(([A-Z]\d+):([A-Z]\d+)\)$/;
+	// =SUM([One capital letter][0 or more digits]:[One capital letter][0 or more digits])
+	const re = /=SUM\(([A-Z]\d*):([A-Z]\d*)\)$/;
 
 	// if string is in valid format, get col letters and row numbers
 	if (string.match(re) !== null) {
-
-		const numberPattern = /\d+/g;
-		const letterPattern = /[A-Z]/g;
-
-		const colNumbers = string.slice(4) // don't get letters in "SUM"
-		                    .match(letterPattern)
-		                    .map(x => x.charCodeAt(0) - 64); 
-		const rowNumbers = string.match(numberPattern)
-		                    .map(x => parseInt(x, 10));
-
+		const startCellCol = getColAndRow(string.match(re)[1])[0].charCodeAt(0) - 64;
+		let startCellRow = getColAndRow(string.match(re)[1])[1];
+		const endCellCol = getColAndRow(string.match(re)[2])[0].charCodeAt(0) - 64;
+		let endCellRow = getColAndRow(string.match(re)[2])[1];
+    
 		// col numbers must match and be in range
-		// row numbers must be in order and be in range
-		if (colNumbers[0] === colNumbers[1] && 
-			  rowNumbers[0] < rowNumbers[1] &&
-		    1 <= rowNumbers[0] && rowNumbers[0] <= numRows &&
-		    1 <= rowNumbers[1] && rowNumbers[1] <= numRows && 
-		    1 <= colNumbers[0] && colNumbers[0] <= numCols &&
-		    1 <= colNumbers[1] && colNumbers[1] <= numCols ) {
-			// if all conditions passed, return array
-		return [colNumbers[0], rowNumbers[0], rowNumbers[1]];
-		}
+		if (startCellCol === endCellCol &&
+        1 <= startCellCol && startCellCol <= numCols &&
+		    1 <= endCellCol && endCellCol <= numCols) {
+
+			// if no row numbers given, want all rows
+		  if (startCellRow === "" && endCellRow === "") {
+		  	startCellRow = 1;
+		  	endCellRow = numRows;
+		
+		  	return [startCellCol, startCellRow, endCellRow];  	
+		  } 
+
+		  // otherwise row numbers must be in order and be in range
+		  else if (startCellRow < endCellRow && 
+		  	  1 <= startCellRow && startCellRow <= numRows &&
+		      1 <= endCellRow && endCellRow <= numRows) {
+	
+		  	return [startCellCol, parseInt(startCellRow, 10), parseInt(endCellRow, 10)];	    
+		  }
+
+		} 
 	}
   // if any conditions failed
 	return false;
 }
 
 
+
+
 module.exports = {
 	isSumFormula: isSumFormula,
+	getColAndRow: getColAndRow
 };
