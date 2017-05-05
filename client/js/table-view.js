@@ -5,7 +5,7 @@ const { removeChildren,
         createTD } = require('./dom-util');
 
 const parser = require('./parser.js');
-const { isSumFormula,
+const { isValidSumFormula,
         getColAndRow } = require('./is-sum-formula.js');
 
 
@@ -201,7 +201,7 @@ class TableView {
   handleFormulaBarEnter(event) {
     // see if value is a valid sum formula
     const value = this.formulaBarEl.value;  
-    const validSumFormula = isSumFormula(value, this.model.numCols, this.model.numRows);
+    const validSumFormula = isValidSumFormula(value, this.model.numCols, this.model.numRows);
     
     // if value is a valid sum formula,
     // compute sum and set value of current cell to sum

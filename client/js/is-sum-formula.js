@@ -4,7 +4,7 @@ const getColAndRow = function(cellId) {
   return [col, row];
 }
 
-const isSumFormula = function(string, numCols, numRows) {
+const isValidSumFormula = function(string, numCols, numRows) {
   // string must be in form
   // =SUM([One capital letter][0 or more digits]:[One capital letter][0 or more digits])
   const re = /=SUM\(([A-Z]\d*):([A-Z]\d*)\)$/;
@@ -47,6 +47,6 @@ const isSumFormula = function(string, numCols, numRows) {
 
 
 module.exports = {
-  isSumFormula: isSumFormula,
+  isValidSumFormula: isValidSumFormula,
   getColAndRow: getColAndRow
 };
