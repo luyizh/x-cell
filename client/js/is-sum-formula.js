@@ -4,17 +4,20 @@ const getColAndRow = function(cellId) {
   return [col, row];
 }
 
+
+
 const isValidSumFormula = function(string, numCols, numRows) {
   // string must be in form
   // =SUM([One capital letter][0 or more digits]:[One capital letter][0 or more digits])
   const re = /=SUM\(([A-Z]\d*):([A-Z]\d*)\)$/;
+  const result = string.match(re);
 
   // if string is in valid format, get col letters and row numbers
-  if (string.match(re) !== null) {
-    const startCellCol = getColAndRow(string.match(re)[1])[0].charCodeAt(0) - 64;
-    let startCellRow = getColAndRow(string.match(re)[1])[1];
-    const endCellCol = getColAndRow(string.match(re)[2])[0].charCodeAt(0) - 64;
-    let endCellRow = getColAndRow(string.match(re)[2])[1];
+  if (result !== null) {
+    const startCellCol = getColAndRow(result[1])[0].charCodeAt(0) - 64;
+    let startCellRow = getColAndRow(result[1])[1];
+    const endCellCol = getColAndRow(result[2])[0].charCodeAt(0) - 64;
+    let endCellRow = getColAndRow(result[2])[1];
     
     // col numbers must match and be in range
     if (startCellCol === endCellCol &&
@@ -42,7 +45,6 @@ const isValidSumFormula = function(string, numCols, numRows) {
   // if any conditions failed
   return false;
 }
-
 
 
 

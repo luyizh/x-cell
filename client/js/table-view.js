@@ -284,7 +284,7 @@ class TableView {
 
   handleAddRowClick(event) {
     // increment row number
-    this.model.numCols++;
+    this.model.numRows++;
 
     // if a row is highlighted at time of press,
     if (this.currentHighlightedRow !== "none") {
