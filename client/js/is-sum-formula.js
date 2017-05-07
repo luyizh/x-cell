@@ -18,6 +18,7 @@ const isValidSumFormula = function(string, numCols, numRows) {
 
       // if no row numbers given, want all rows
       if (startCellRow === "" && endCellRow === "") {
+        
         startCellRow = 1;
         endCellRow = numRows;
     
