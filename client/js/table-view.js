@@ -4,9 +4,7 @@ const { removeChildren,
         createTH,
         createTD } = require('./dom-util');
 
-const parser = require('./parser.js');
-const { isValidSumFormula,
-        getColAndRow } = require('./is-sum-formula.js');
+const { isValidSumFormula } = require('./is-sum-formula.js');
 
 
 class TableView {

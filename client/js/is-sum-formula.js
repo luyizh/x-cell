@@ -1,23 +1,15 @@
-const getColAndRow = function(cellId) {
-  const col = cellId[0];
-  const row = cellId.slice(1);
-  return [col, row];
-}
-
-
-
 const isValidSumFormula = function(string, numCols, numRows) {
   // string must be in form
   // =SUM([One capital letter][0 or more digits]:[One capital letter][0 or more digits])
-  const re = /=SUM\(([A-Z]\d*):([A-Z]\d*)\)$/;
+  const re = /=SUM\((([A-Z])(\d*)):(([A-Z])(\d*))\)$/;
   const result = string.match(re);
 
   // if string is in valid format, get col letters and row numbers
   if (result !== null) {
-    const startCellCol = getColAndRow(result[1])[0].charCodeAt(0) - 64;
-    let startCellRow = getColAndRow(result[1])[1];
-    const endCellCol = getColAndRow(result[2])[0].charCodeAt(0) - 64;
-    let endCellRow = getColAndRow(result[2])[1];
+    const startCellCol = result[2].charCodeAt(0) - 64;
+    let startCellRow = result[3];
+    const endCellCol = result[5].charCodeAt(0) - 64;
+    let endCellRow = result[6];
     
     // col numbers must match and be in range
     if (startCellCol === endCellCol &&
@@ -47,8 +39,6 @@ const isValidSumFormula = function(string, numCols, numRows) {
 }
 
 
-
 module.exports = {
   isValidSumFormula: isValidSumFormula,
-  getColAndRow: getColAndRow
 };
