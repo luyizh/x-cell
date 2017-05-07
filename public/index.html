@@ -6,7 +6,23 @@
 
 <body>
   <div class="container">
+    <h1> X-Cell Spreadsheet </h1>
+    <div class="instructions">
+      <h2> Click a cell (it will become <font color="blue">blue</font>) to enter a value into that cell by typing the value into the <font color="green">green</font> formula bar at the top of the page. 
+      The sum of all numeric values in a given column will be displayed in the <span style="color: #FF4E3A">pink</span> sum bar at the bottom of the page. </h2>
+      <h2> Click a column header (capital letters, top row) to <span style="background-color: #FFFF00">highlight</span> that column. Click a row label (numbers, leftmost column) to highlight that row. </h2>
+      <h2> Click "<span style="background-color: #CCF3D4">ADD COLUMN</span>" to add a column to the bottom of the spreadsheet (if no column is currently highlighted) or to add a column directly to the right of a currently highlighted column. Click "<span style="background-color: #CCF3D4">ADD ROW</span>" to add a row to the bottom of the spreadsheet (if no row is currently highlighted) or to add a row directly below a currently highlighted row. </h2>
+      <h2> You can compute the sum of a vertical range of cells by typing a sum in the form "<font color="purple">=SUM([col][rowStart]:[col][RowEnd])</font>", for example, "<font color="purple">=SUM(A1:A5)</font>", into the formula bar. </h2>
+      <h2> *** Be sure to click the "<span style="background-color: #CCF3D4">COMPUTE SUM FORMULA</span>" button after typing your sum to display the sum in the currently clicked cell. *** </h2>
+    </div>
+    <button id="compute-sum-formula">Compute sum formula</button> 
+    <button id="add-column">Add column</button> 
+    <button id="add-row">Add row</button>    
+
+    <div class="clearfloat"></div>
+    
     <input id="formula-bar" type="text" value="" />
+    <div class="clearfloat"></div>
     <table id="sheet-current">
       <thead>
         <tr>
@@ -14,11 +30,23 @@
         </tr>
       </thead>
       <tbody>
-      	<tr>
+        <tr>
 
-      	</tr>
+        </tr>
       </tbody>
+      <tfoot>
+        <tr>
+
+        </tr>
+      </tfoot>
+      <div id="row-labels">
+
+      </div>
     </table>
+
+    <div class="clearfloat"></div>
+
+  
   </div>
 
   <script src="js/bundle.js"></script>

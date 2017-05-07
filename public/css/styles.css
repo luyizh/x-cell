@@ -4,20 +4,83 @@ table {
 
 th,
 td {
-	border: 1px solid black;
-	min-width: 100px;
-	height: 25px;
-	padding: 3px;
+  border: 1px solid black;
+  width: 100px;
+  height: 25px;
+  padding: 3px;
 }
 
 .current-cell {
-	background-color: lightblue;
+  background-color: lightblue;
+}
+
+.current-row,
+.current-col {
+  background-color: yellow;
 }
 
 #formula-bar {
-	background-color: lightgreen;
-	border: 1px solid black;
-	width: 150px;
-	height: 25px;
-	padding: 3px;
+  background-color: lightgreen;
+  border: 1px solid black;
+  width: 150px;
+  height: 25px;
+  padding: 3px;
+  font-size: 16;
+}
+
+tfoot {
+  background-color: pink;
+}
+
+thead {
+  color: rgb(47, 79, 79);
+}
+
+button {
+  font-size: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  color: rgb(47, 79, 79);
+  background-color: #CCF3D4;
+}
+
+#row-labels { 
+  border-collapse: collapse;
+  float: left;
+  color: rgb(47, 79, 79);
+  width: 8%;
+}
+
+#sheet-current {
+  float: right;
+  width: 92%;
+}
+
+.clearfloat {
+  clear: both;
+}
+
+
+h1 {
+  text-align: center;
+  font-size: 26px;
+  background-color: #C1C9FC;
+  padding: 1px;
+  margin: 0px;
+  color: rgb(47, 79, 79);
+}
+
+h2 {
+  text-align: center;
+  font-size: 14px;
+  font-family: "Arial";
+  padding: 4px 0px;
+  margin: 0px;
+  color: rgb(47, 79, 79);
+}
+
+.instructions{
+  background-color: lightblue;
+  margin: 0px;
+  padding: 0px 20px;
 }
